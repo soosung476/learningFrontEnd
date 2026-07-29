@@ -1,0 +1,34 @@
+p {
+  color: red;
+}
+#Lastname {
+  color: red;
+}
+.intro {
+  background-color: whitesmoke;
+}
+h1,
+h3,
+th {
+  color: green;
+}
+th,
+td {
+  padding: 10px;
+}
+h1:hover {
+  background-color: burlywood;
+}
+[title*="beautiful"] {
+  text-decoration: underline;
+}
+.myquote {
+  border: 2px solid #333333;
+}
+tr:nth-child(2n) {
+  background-color: aqua;
+}
+table tr:first-child > th {
+  background-color: black;
+  color: white;
+}
