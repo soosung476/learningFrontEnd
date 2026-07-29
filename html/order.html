@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>운동화 주문하기</h1>
+    <form action="" id="orderform">
+      <fieldset>
+        <legend>사이즈 선택</legend>
+        <div>
+          <input
+            type="radio"
+            name="size"
+            id="250mm"
+            value="250"
+            form="orderform"
+            checked
+          />
+          <label for="250mm">250mm</label>
+          <input
+            type="radio"
+            name="size"
+            id="260mm"
+            value="260"
+            form="orderform"
+          />
+          <label for="260mm">260mm</label>
+          <input
+            type="radio"
+            name="size"
+            id="270mm"
+            value="270"
+            form="orderform"
+          />
+          <label for="270mm">270mm</label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>색상 선택</legend>
+        <div>
+          <label for="color"
+            >색상:
+            <select name="color" id="color" form="orderform">
+              <optgroup label="어두운 색">
+                <option value="black">Black</option>
+                <option value="Navy">Navy</option>
+              </optgroup>
+              <optgroup label="밝은 색">
+                <option value="White">White</option>
+                <option value="Beige">Beige</option>
+              </optgroup>
+            </select>
+          </label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>배송지</legend>
+        <select name="address" id="addr" form="orderform">
+          <option value="seoul">서울</option>
+          <option value="busan">부산</option>
+          <option value="daegu">대구</option>
+        </select>
+      </fieldset>
+      <fieldset style="height: 100px">
+        <legend>요청 사항</legend>
+        <div>
+          <textarea
+            name="requirement"
+            id="req"
+            placeholder="배송시 요청 사항을 입력하세요"
+            form="orderform"
+            style="height: 80px"
+          ></textarea>
+        </div>
+      </fieldset>
+      <button type="submit">주문하기</button>
+      <button type="reset">초기화</button>
+    </form>
+  </body>
+</html>
