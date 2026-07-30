@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      html {
+        font-size: 16px;
+      }
+      p {
+        font-family: serif;
+        font-style: italic;
+        font-weight: bold;
+        /* font-size: 1rem; */
+      }
+      div {
+        font-size: 2em;
+      }
+      p.line {
+        text-decoration: overline line-through underline dashed;
+      }
+      .transform {
+        text-transform: lowercase;
+      }
+      .shadow {
+        /* x좌표, y좌표, 투명도, 색상 */
+        text-shadow:
+          1px 0 white,
+          -1px 0 white,
+          0 1px white,
+          0 -1px white,
+          1px 1px white,
+          1px -1px white,
+          -1px 1px white,
+          -1px -1px white,
+          /* 바깥쪽 자두색 */ 2px 0 plum,
+          -2px 0 plum,
+          0 2px plum,
+          0 -2px plum,
+          2px 1px plum,
+          -2px 1px plum,
+          1px 2px plum,
+          1px -2px plum,
+          2px -1px plum,
+          -2px -1px plum,
+          -1px 2px plum,
+          -1px -2px plum,
+          2px 2px plum,
+          2px -2px plum,
+          -2px 2px plum,
+          -2px -2px plum;
+      }
+      .shadow2 {
+        text-shadow: 2px 2px lightgray;
+      }
+      .align {
+        /* text-align: justify; */
+        text-indent: 1em;
+        /* letter-spacing: -2px; */
+        /* word-spacing: 20px; */
+        line-height: 1.5em;
+      }
+    </style>
+  </head>
+  <body>
+    <!--
+        글자(font-*), 텍스트스타일 
+        font-style : 기울임(oblique, italic)
+        font-weight : 굵기(400이 기본값) bold(700)
+        font-size : 글자크기(px, em, rem, %)
+          em, rem, % : 부모요소의 크기에 비례해서 표현
+
+        텍스트 스타일(text-*)
+        text-decoration
+        text-shadow
+        text-align
+        text-indent : 양수(들여쓰기), 음수(내어쓰기)
+
+        단어 간격
+        자간 : letter-spacing
+        단어간격 : word-spacing
+
+        줄높이
+        line-height : 1.5em  주로 사용
+    -->
+    <p>서체 스타일과 굵기</p>
+    바깥
+    <div>
+      중간
+      <div>안쪽</div>
+    </div>
+    <p class="line">텍스트 데코레이션</p>
+    <div class="transform">HTML & CSS Programming is fun!</div>
+    <div class="shadow">text-shadow를 사용하면 텍스트에 그림자 적용</div>
+    <div class="shadow2">text-shadow를 사용하면 텍스트에 그림자 적용</div>
+    <p class="align">
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis saepe accusantium, autem deserunt quae est,
+      illum nisi labore enim, aliquid eius corporis sint dicta doloribus dolorem? Obcaecati dolores necessitatibus nulla
+      iusto nihil inventore impedit, laborum non ipsa voluptates, maxime quidem nostrum suscipit incidunt! Mollitia nisi
+      vel iure voluptates aliquam ipsa.
+    </p>
+  </body>
+</html>

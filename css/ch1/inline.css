@@ -1,10 +1,24 @@
-h1 {
-  background-color: burlywood;
+* {
+  margin: 0;
+  padding: 0;
+}
+div {
+  background-color: brown;
+  /* display: inline-block; */
   width: 500px;
-  height: 300px;
+  /* padding: 10px; */
+
+  /* 값 부여: 시계방향 */
+  padding: 10px 20px 15px;
+  margin: 20px;
+  /* height: 300px; */
 }
 span {
-  background-color: cyan;
+  background-color: burlywood;
+  /* display: inline-block; */
   width: 200px;
-  height: 300px;
+  padding: 10px;
+  margin: 20px;
+
+  /* height: 300px; */
 }
