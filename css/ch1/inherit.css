@@ -1,0 +1,20 @@
+.blue {
+  color: slateblue;
+}
+.green {
+  color: green;
+}
+.red {
+  color: red;
+}
+.parent {
+  font-weight: bold;
+  color: slateblue;
+}
+.parent > div {
+  color: olivedrab;
+}
+.parent > div:last-child {
+  /* color: slateblue; */
+  color: inherit;
+}
