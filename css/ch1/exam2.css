@@ -1,0 +1,68 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Times New Roman", Times, serif;
+}
+
+.login-box {
+  width: 300px;
+  height: 400px;
+  position: relative;
+  margin: 100px auto;
+  border: 1px solid black;
+  padding: 30px;
+}
+h1 {
+  text-align: center;
+}
+label[for="userid"] {
+  display: block;
+}
+#userid {
+  display: block;
+  width: 100%;
+  height: 30px;
+  margin-bottom: 10px;
+}
+label[for="password"] {
+  display: block;
+}
+#password {
+  display: block;
+  width: 100%;
+  height: 30px;
+  margin-bottom: 20px;
+}
+label {
+  margin: 10px 0;
+}
+button[type="submit"] {
+  width: 100%;
+  height: 50px;
+  background-color: rgb(0, 113, 227);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: large;
+}
+.join {
+  margin-top: 30px;
+  font-size: small;
+  text-align: center;
+}
+.new {
+  display: block;
+  font-size: smaller;
+  width: 50px;
+  height: 30px;
+  text-align: center;
+  line-height: 30px;
+  color: white;
+  border: none;
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background-color: rgb(0, 113, 227);
+  border-radius: 25px;
+}
