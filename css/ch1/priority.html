@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      /* Style priority
+        !important > inline style > id selector > class selector > tag selector > * > inherit 
+      
+      */
+      p#text {
+        color: red;
+      }
+      p {
+        color: blue;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="area">
+      <p id="text" style="color: green">
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam
+        adipisci aliquam sint magnam, velit optio cum commodi natus voluptates
+        officia earum ratione vitae nisi dicta enim nemo quasi eius numquam?
+      </p>
+    </div>
+  </body>
+</html>

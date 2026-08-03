@@ -1,0 +1,36 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+body {
+  padding: 2rem;
+  background-color: #f1f5f9;
+}
+.gallery {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-auto-rows: 180px;
+}
+.card {
+  background-color: white;
+  border-radius: 25px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+.card > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.large {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+.tall {
+  grid-row: span 2;
+}
+.wide {
+  grid-column: span 2;
+}
