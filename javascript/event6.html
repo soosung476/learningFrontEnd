@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Light</h1>
+    <div>
+      <button type="button">Switch</button>
+      <img src="./data/pic_bulboff.gif" alt="" />
+    </div>
+    <script>
+      const div = document.querySelector("div");
+      const img = document.querySelector("img");
+      let on = false;
+      div.addEventListener("click", (e) => {
+        if (e.target.tagName === "BUTTON" && on === false) {
+          img.src = "./data/pic_bulbon.gif";
+          on = true;
+        } else if (e.target.tagName === "BUTTON" && on === true) {
+          img.src = "./data/pic_bulboff.gif";
+          on = false;
+        }
+      });
+    </script>
+  </body>
+</html>

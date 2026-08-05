@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <form action="">
+      <div>
+        <input type="text" name="num1" id="num1" size="5" />
+        <select name="op" id="op">
+          <option value="+">+</option>
+          <option value="-">-</option>
+          <option value="*">*</option>
+          <option value="/">/</option>
+        </select>
+        <input type="text" name="num2" id="num2" size="5" />
+        <button type="button">계산</button>
+      </div>
+    </form>
+    <div id="result"></div>
+
+    <script>
+      // 계산버튼이 클릭하면
+
+      document.querySelector("button").addEventListener("click", () => {
+        const num1 = document.querySelector("#num1").value;
+        const num2 = document.querySelector("#num2").value;
+        const op = document.querySelector("#op").value;
+        switch (op) {
+          case "+":
+            document.querySelector("#result").innerHTML =
+              parseInt(num1) + parseInt(num2);
+            break;
+          case "-":
+            document.querySelector("#result").innerHTML =
+              parseInt(num1) - parseInt(num2);
+            break;
+          case "*":
+            document.querySelector("#result").innerHTML =
+              parseInt(num1) * parseInt(num2);
+            break;
+          case "/":
+            document.querySelector("#result").innerHTML =
+              Number(num1) / Number(num2);
+            break;
+
+          default:
+            break;
+        }
+      });
+    </script>
+  </body>
+</html>

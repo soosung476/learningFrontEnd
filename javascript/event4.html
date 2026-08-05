@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      table,
+      td {
+        border: 1px solid black;
+        border-collapse: collapse;
+      }
+      table {
+        width: 500px;
+      }
+    </style>
+  </head>
+  <body>
+    <table id="outside">
+      <tr>
+        <td id="t1">one</td>
+      </tr>
+      <tr>
+        <td id="t2">two</td>
+      </tr>
+    </table>
+
+    <script>
+      // table click시 two, three가 toggle
+
+      const table = document.querySelector("#outside");
+      const t2 = document.querySelector("#t2");
+      table.addEventListener("click", () => {
+        if (t2.textContent == "two") {
+          t2.innerText = "three";
+        } else {
+          t2.innerText = "two";
+        }
+      });
+    </script>
+  </body>
+</html>

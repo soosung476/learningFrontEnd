@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="test">
+      <p>반갑습니다.</p>
+    </div>
+
+    <script>
+      const p = "<p>안녕하세요</p>";
+
+      // 기준.insertAdjacentHTML("포지션", 삽입할 태그);
+      // afterbegin - 기준태그 시작후 자식요소로 들어감 (첫번째 자식)
+      // afterend - 기준태그 끝나고 형제요소로 들어감 (다음 형제요소)
+      // beforebegin - 기준태그 시작전 형제요소로 들어감 (이전 형제요소)
+      // beforeend - 기준태그가  마치기 전 자식요소로 들어감 (마지막 자식)
+
+      //   document.getElementById("test");
+      //   document.querySelector("#test").insertAdjacentHTML("afterbegin", p);
+      //   document.querySelector("#test").insertAdjacentHTML("afterend", p);
+      //   document.querySelector("#test").insertAdjacentHTML("beforebegin", p);
+      document.querySelector("#test").insertAdjacentHTML("beforeend", p);
+
+      const img = '<img src="https://placehold.co/100" alt="">';
+
+      document.body.insertAdjacentHTML("beforeend", img);
+    </script>
+  </body>
+</html>

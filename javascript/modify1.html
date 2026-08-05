@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1 id="header">Header1</h1>
+    <h1 id="header2" class="one two">Header2</h1>
+    <a href="https://www.naver.com">네이버</a>
+    <script>
+      // 1. DOM 요소 생성
+      // 2. DOM 요소 수정
+      // 3. DOM 요소 삭제
+      const header = document.getElementById("header");
+
+      // 속성 가져오기
+      console.log(header.id);
+      console.log(header.getAttribute("id"));
+      // 속성 변경
+      // 속성 값 변경
+      header.id = "title";
+      // 새로운 속성 추가
+      header.setAttribute("name", "header");
+      // 스타일 변경
+      header.style.color = "blue";
+      header.style.border = "2px, solid black";
+      header.style.fontSize = "32px";
+
+      const aTag = document.querySelector("a");
+      console.log(aTag);
+      console.log(aTag.href);
+      console.log(aTag.innerText);
+
+      const header2 = document.querySelector("#header2");
+      // 클래스명 가져오기
+      console.log(header2.classList);
+
+      // 클래스명 변경
+      header2.classList.replace("one", "header");
+      // 클래스명 추가
+      header2.classList.add("three");
+      // 토글 없으면 추가, 있으면 지움
+      // header2.classList.toggle("four");
+      header2.classList.toggle("two");
+      // 클래스명 삭제
+      header2.classList.remove("header");
+    </script>
+  </body>
+</html>

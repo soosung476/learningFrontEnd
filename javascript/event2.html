@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      #box {
+        width: 500px;
+        height: 300px;
+        background-color: tomato;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="box"></div>
+    <div class="color">
+      <input type="radio" name="color" id="blue" value="blue" />파랑
+      <input type="radio" name="color" id="red" value="red" />빨강
+    </div>
+
+    <script>
+      // 둘중 하나 선택 시 value 가져와서 #box background 변경
+      const box1 = document.querySelector("#box");
+      //   const blueRadio = document.querySelector("#blue");
+      //   const redRadio = document.querySelector("#red");
+      //   blueRadio.addEventListener("click", () => {
+      //     box1.style.backgroundColor = blueRadio.value;
+      //   });
+      //   redRadio.addEventListener("click", () => {
+      //     box1.style.backgroundColor = redRadio.value;
+      //   });
+      // const rdos = document.querySelectorAll(`[name='color']`);
+      // rdos.forEach((rdo) => {
+      //   rdo.addEventListener("click", (e) => {
+      //     // box1.style.backgroundColor = rdo.value;
+      //     // e : event
+      //     console.log(e.target);
+      //     box1.style.backgroundColor = e.target.value;
+      //   });
+      // });
+
+      // 이벤트 위임
+      const color = document.querySelector(".color");
+      color.addEventListener("click", (e) => {
+        // console.log(e.target);
+        // console.log(e.currentTarget);
+        if (e.target.tagName === "INPUT") {
+          box1.style.backgroundColor = e.target.value;
+        }
+      });
+    </script>
+  </body>
+</html>
