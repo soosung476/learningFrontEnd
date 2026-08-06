@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div></div>
+    <script>
+      const url = "https://jsonplaceholder.typicode.com/users";
+      async function load() {
+        try {
+          const response = await fetch(url);
+          const data = await response.json();
+          let result = `<ul>`;
+          data.forEach((data, idx) => {
+            result += `<li>id : ${data.id}</li>`;
+            result += `<li>name : ${data.name}</li>`;
+            result += `<li>username : ${data.username}</li>`;
+            result += `<li>email : ${data.email}</li>`;
+          });
+
+          result += `</ul>`;
+          document.querySelector("div").innerHTML = result;
+        } catch (e) {
+          console.error("error발생", e);
+        }
+      }
+      load();
+    </script>
+  </body>
+</html>

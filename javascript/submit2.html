@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .text-danger {
+        color: red;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <form action="" method="get">
+      <div>
+        <label for="userid">ID</label>
+        <input type="text" name="userid" id="userid" />
+      </div>
+      <div>
+        <label for="password">password</label>
+        <input type="password" name="password" id="password" />
+      </div>
+      <div>
+        <label for="tel">tel</label>
+        <input type="tel" name="tel" id="tel" />
+      </div>
+      <button type="submit">submit</button>
+    </form>
+
+    <script>
+      // submit 이벤트
+      const form = document.querySelector("form");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        if (form.userid.value === "") {
+          alert("ID를 입력해주세요");
+          form.elements.userid.focus();
+          return;
+        }
+        if (form.password.value === "") {
+          alert("Password를 입력해주세요");
+          form.elements.password.focus();
+          return;
+        }
+        if (form.tel.value === "") {
+          alert("tel을 입력해주세요");
+          form.elements.tel.focus();
+          return;
+        }
+
+        form.submit();
+      });
+    </script>
+  </body>
+</html>
