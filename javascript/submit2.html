@@ -32,20 +32,23 @@
       // submit 이벤트
       const form = document.querySelector("form");
 
+      const pattern = /^\d{3}-\d{4}-\d{4}$/;
       form.addEventListener("submit", (e) => {
         e.preventDefault();
         if (form.userid.value === "") {
           alert("ID를 입력해주세요");
           form.elements.userid.focus();
           return;
-        }
-        if (form.password.value === "") {
+        } else if (form.password.value === "") {
           alert("Password를 입력해주세요");
           form.elements.password.focus();
           return;
-        }
-        if (form.tel.value === "") {
+        } else if (form.tel.value === "") {
           alert("tel을 입력해주세요");
+          form.elements.tel.focus();
+          return;
+        } else if (!pattern.test(form.tel.value)) {
+          alert("패턴이 틀렸습니다.");
           form.elements.tel.focus();
           return;
         }
