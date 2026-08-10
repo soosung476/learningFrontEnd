@@ -1,0 +1,1865 @@
+<title>TypeScript 복습 노트</title>
+<style>
+  :root {
+    --bg: #F1F4F8;
+    --surface: #FFFFFF;
+    --surface-2: #E9EDF4;
+    --ink: #0F1620;
+    --ink-2: #4C5866;
+    --ink-3: #7B8798;
+    --line: #D7DEE8;
+    --line-2: #C3CCDA;
+    --accent: #2457C5;
+    --accent-soft: #E3EAFA;
+    --warn: #96591A;
+    --warn-soft: #F8EEDD;
+    --bad: #AD261E;
+    --bad-soft: #FAE6E4;
+    --good: #14664A;
+    --good-soft: #DEF0E8;
+    --syn-type: #7A3E9D;
+
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, "JetBrains Mono", Menlo, Consolas, monospace;
+    --sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
+            "Segoe UI", "Noto Sans KR", system-ui, sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0D1117;
+      --surface: #141A22;
+      --surface-2: #1A222C;
+      --ink: #E6EDF5;
+      --ink-2: #A5B2C2;
+      --ink-3: #6F7E90;
+      --line: #232C38;
+      --line-2: #303B4A;
+      --accent: #83ACFF;
+      --accent-soft: #17233A;
+      --warn: #DFA96A;
+      --warn-soft: #2A2317;
+      --bad: #F0918A;
+      --bad-soft: #2D1B1A;
+      --good: #6FCFA4;
+      --good-soft: #122A22;
+      --syn-type: #C9A0E8;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #0D1117;
+    --surface: #141A22;
+    --surface-2: #1A222C;
+    --ink: #E6EDF5;
+    --ink-2: #A5B2C2;
+    --ink-3: #6F7E90;
+    --line: #232C38;
+    --line-2: #303B4A;
+    --accent: #83ACFF;
+    --accent-soft: #17233A;
+    --warn: #DFA96A;
+    --warn-soft: #2A2317;
+    --bad: #F0918A;
+    --bad-soft: #2D1B1A;
+    --good: #6FCFA4;
+    --good-soft: #122A22;
+    --syn-type: #C9A0E8;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+    margin: 0;
+    word-break: keep-all;
+  }
+
+  /* ── reading progress ─────────────────────────────── */
+  .progress {
+    position: fixed; top: 0; left: 0; height: 2px; width: 0%;
+    background: var(--accent); z-index: 50;
+  }
+
+  /* ── shell ────────────────────────────────────────── */
+  .shell {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 28px 120px;
+    display: grid;
+    grid-template-columns: 232px minmax(0, 1fr);
+    gap: 56px;
+    align-items: start;
+  }
+
+  /* ── masthead ─────────────────────────────────────── */
+  .masthead {
+    grid-column: 1 / -1;
+    border-bottom: 1px solid var(--line);
+    padding: 56px 0 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .masthead h1 {
+    font-size: clamp(30px, 4.4vw, 46px);
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    font-weight: 800;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .masthead .lede {
+    color: var(--ink-2);
+    max-width: 62ch;
+    margin: 0;
+    font-size: 17px;
+  }
+  .sources {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px;
+  }
+  .src {
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 3px 9px;
+    border: 1px solid var(--line-2);
+    border-radius: 4px;
+    color: var(--ink-2);
+    background: var(--surface);
+  }
+
+  /* ── nav ──────────────────────────────────────────── */
+  .toc {
+    position: sticky;
+    top: 28px;
+    max-height: calc(100vh - 56px);
+    overflow-y: auto;
+    padding-top: 40px;
+  }
+  .toc-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 12px;
+  }
+  .toc ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1px; }
+  .toc a {
+    display: grid;
+    grid-template-columns: 26px 1fr;
+    gap: 6px;
+    padding: 5px 8px 5px 0;
+    text-decoration: none;
+    color: var(--ink-2);
+    font-size: 13.5px;
+    line-height: 1.45;
+    border-left: 2px solid transparent;
+    padding-left: 10px;
+    transition: color .15s, border-color .15s;
+  }
+  .toc a .no { font-family: var(--mono); font-size: 11.5px; color: var(--ink-3); padding-top: 2px; }
+  .toc a:hover { color: var(--ink); }
+  .toc a.active { color: var(--accent); border-left-color: var(--accent); font-weight: 600; }
+  .toc a.active .no { color: var(--accent); }
+  .toc a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+
+  .toc-mobile { display: none; }
+
+  /* ── content ──────────────────────────────────────── */
+  .content {
+    min-width: 0;
+    padding-top: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 68px;
+  }
+  .sec { display: flex; flex-direction: column; gap: 18px; scroll-margin-top: 24px; }
+  .sec-head { display: flex; flex-direction: column; gap: 6px; }
+  .sec-no {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+  }
+  .sec h2 {
+    font-size: 26px;
+    letter-spacing: -0.02em;
+    font-weight: 750;
+    margin: 0;
+    line-height: 1.3;
+    text-wrap: balance;
+  }
+  .sec h3 {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 14px 0 0;
+    color: var(--ink);
+  }
+  .sec p { margin: 0; max-width: 68ch; color: var(--ink-2); }
+  .sec p strong { color: var(--ink); font-weight: 650; }
+  .sec > p:first-of-type { color: var(--ink-2); }
+
+  ul.list { margin: 0; padding-left: 20px; color: var(--ink-2); max-width: 68ch; display: flex; flex-direction: column; gap: 7px; }
+  ul.list strong { color: var(--ink); font-weight: 650; }
+  ul.list::marker { color: var(--ink-3); }
+
+  code.i {
+    font-family: var(--mono);
+    font-size: 0.88em;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 1px 5px;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  /* ── code blocks ──────────────────────────────────── */
+  pre.code {
+    margin: 0;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.75;
+  }
+  pre.code code { font-family: var(--mono); color: var(--ink); white-space: pre; }
+  .tk-c { color: var(--ink-3); }
+  .tk-s { color: var(--good); }
+  .tk-n { color: var(--warn); }
+  .tk-k { color: var(--accent); }
+  .tk-t { color: var(--syn-type); }
+
+  .codewrap { display: flex; flex-direction: column; gap: 7px; }
+  .caption { font-family: var(--mono); font-size: 11.5px; color: var(--ink-3); letter-spacing: 0.02em; }
+
+  /* ── good / bad pair ──────────────────────────────── */
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .pane { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+  .pane-label {
+    font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.06em;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .pane-bad .pane-label { color: var(--bad); }
+  .pane-good .pane-label { color: var(--good); }
+  .pane-bad pre.code { border-color: color-mix(in srgb, var(--bad) 32%, var(--line)); }
+  .pane-good pre.code { border-color: color-mix(in srgb, var(--good) 32%, var(--line)); }
+
+  /* ── callouts ─────────────────────────────────────── */
+  .call {
+    border-left: 3px solid var(--accent);
+    background: var(--accent-soft);
+    padding: 13px 16px;
+    border-radius: 0 6px 6px 0;
+    max-width: 72ch;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .call .tag {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--accent);
+  }
+  .call p { color: var(--ink); font-size: 14.5px; max-width: none; }
+  .call.trap { border-left-color: var(--warn); background: var(--warn-soft); }
+  .call.trap .tag { color: var(--warn); }
+  .call.tip { border-left-color: var(--good); background: var(--good-soft); }
+  .call.tip .tag { color: var(--good); }
+
+  /* ── tables ───────────────────────────────────────── */
+  .tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 7px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; min-width: 520px; }
+  th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  thead th {
+    font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--ink-3); font-weight: 500; background: var(--surface-2);
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  td code, th code { font-family: var(--mono); font-size: 12.5px; color: var(--ink); }
+  td:first-child { white-space: nowrap; }
+  td { color: var(--ink-2); }
+
+  /* ── self check ───────────────────────────────────── */
+  .quiz { display: flex; flex-direction: column; gap: 8px; }
+  details.q {
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    background: var(--surface);
+    padding: 0;
+  }
+  details.q summary {
+    cursor: pointer;
+    padding: 12px 16px;
+    font-weight: 600;
+    font-size: 15px;
+    list-style: none;
+    display: flex; gap: 10px; align-items: baseline;
+  }
+  details.q summary::-webkit-details-marker { display: none; }
+  details.q summary::before {
+    content: "?";
+    font-family: var(--mono); font-size: 12px; color: var(--accent);
+    border: 1px solid var(--line-2); border-radius: 4px;
+    padding: 0 6px; flex: none;
+  }
+  details.q[open] summary { border-bottom: 1px solid var(--line); }
+  details.q .a { padding: 13px 16px 15px; color: var(--ink-2); font-size: 14.5px; display: flex; flex-direction: column; gap: 10px; }
+  details.q .a p { margin: 0; max-width: none; }
+  details.q summary:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: 6px; }
+
+  .footnote {
+    grid-column: 1 / -1;
+    border-top: 1px solid var(--line);
+    margin-top: 40px;
+    padding-top: 20px;
+    font-size: 13px;
+    color: var(--ink-3);
+    font-family: var(--mono);
+  }
+
+  @media (max-width: 880px) {
+    .shell { grid-template-columns: 1fr; gap: 0; padding: 0 20px 80px; }
+    .toc { display: none; }
+    .toc-mobile { display: block; margin-top: 28px; }
+    .toc-mobile summary {
+      cursor: pointer; font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--ink-3); padding: 10px 0;
+    }
+    .toc-mobile .toc { display: block; position: static; max-height: none; padding-top: 0; }
+    .pair { grid-template-columns: 1fr; }
+    .content { gap: 56px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { scroll-behavior: auto !important; transition: none !important; }
+  }
+  html { scroll-behavior: smooth; }
+</style>
+
+<div class="progress" id="progress"></div>
+
+<div class="shell">
+
+  <header class="masthead">
+    <div class="eyebrow">TypeScript · 강의 예제 재정리</div>
+    <h1>흩어진 예제를 학습 순서대로 다시 꿴 복습 노트</h1>
+    <p class="lede">
+      원본 파일에는 같은 주제가 앞뒤로 흩어져 있습니다(유틸리티 → 함수 → 다시 유틸리티).
+      이 노트는 그 예제들을 <strong>기초 타입 → 타입 설계 → 좁히기 → 함수/제네릭 → 유틸리티 → DOM 실전</strong> 순서로
+      다시 배열하고, "그때 그냥 적어두기만 했던" 개념에 이유를 붙였습니다.
+    </p>
+    <div class="sources">
+      <span class="src">function.ts</span>
+      <span class="src">ts1.ts</span>
+      <span class="src">ts2.ts</span>
+      <span class="src">exam/todo.ts</span>
+      <span class="src">exam/quiz.ts</span>
+    </div>
+    <details class="toc-mobile">
+      <summary>목차 열기</summary>
+      <nav class="toc" aria-label="목차"><ol id="toc-list-m"></ol></nav>
+    </details>
+  </header>
+
+  <nav class="toc" aria-label="목차">
+    <div class="toc-title">목차</div>
+    <ol id="toc-list"></ol>
+  </nav>
+
+  <main class="content">
+
+    <!-- ═══════════════ 00 ═══════════════ -->
+    <section class="sec" id="s00" data-no="00" data-title="TypeScript가 실제로 하는 일">
+      <div class="sec-head">
+        <div class="sec-no">00</div>
+        <h2>TypeScript가 실제로 하는 일</h2>
+      </div>
+
+      <p>
+        JavaScript는 <strong>런타임에</strong> 타입이 결정됩니다. 그래서 잘못된 인자를 넘겨도 실행하기 전까지는 아무도 모릅니다.
+        TypeScript는 그 판정을 <strong>실행 전(컴파일 시점)</strong>으로 끌어옵니다. <code class="i">function.ts</code>의 예제가 정확히 그 얘기입니다.
+      </p>
+
+      <div class="codewrap">
+        <div class="caption">function.ts — 인자 개수와 타입이 코드를 쓰는 순간 검증된다</div>
+<pre class="code"><code>function add(num1: number, num2: number): void {
+  console.log(num1 + num2);
+}
+
+add(1, 2);              // OK
+// add();               // 에러: 인자 2개가 필요함
+// add(1);              // 에러: 인자가 모자람
+// add(1, 2, 3);        // 에러: 인자가 많음
+// add("Hello", "World") // 에러: string은 number에 대입 불가</code></pre>
+      </div>
+
+      <h3>컴파일 흐름 — 타입은 실행되지 않는다</h3>
+      <p>
+        가장 중요한 한 줄입니다. <strong>타입 표기는 컴파일 후 전부 지워집니다(type erasure).</strong>
+        <code class="i">tsc</code>가 <code class="i">src/*.ts</code>를 읽어 <code class="i">dist/*.js</code>를 만들고, 브라우저·Node가 실행하는 건 그 <code class="i">.js</code>뿐입니다.
+        그래서 타입은 런타임 동작을 <em>절대</em> 바꾸지 않습니다 — 타입으로 값을 검사할 수 없는 이유이기도 합니다(→ <a href="#s13" style="color:var(--accent)">13장</a>).
+      </p>
+
+      <div class="codewrap">
+        <div class="caption">tsconfig.json — 지금 프로젝트 설정이 뜻하는 것</div>
+<pre class="code"><code>{
+  "compilerOptions": {
+    "rootDir": "./src",      // 원본 .ts 위치
+    "outDir": "./dist",      // 변환된 .js 출력 위치
+    "target": "es2020",      // 어떤 JS 문법 수준으로 낮출지
+    "module": "commonjs",    // 모듈 방식 (require/exports)
+    "strict": true,          // ★ 엄격 모드 한 방에 켜기
+    "esModuleInterop": true
+  }
+}</code></pre>
+      </div>
+
+      <div class="call">
+        <div class="tag">strict: true 가 켜는 것</div>
+        <p>
+          <code class="i">strictNullChecks</code>(null·undefined를 아무 데나 못 넣음),
+          <code class="i">noImplicitAny</code>(타입 못 정하면 암묵적 any 금지),
+          <code class="i">strictFunctionTypes</code> 등이 한꺼번에 켜집니다.
+          지금 노트의 규칙 대부분은 이게 켜져 있다는 전제입니다.
+        </p>
+      </div>
+
+      <h3>모든 파일 첫 줄의 <code class="i">export {}</code> 는 뭐였나</h3>
+      <p>
+        <code class="i">import</code>/<code class="i">export</code>가 하나도 없는 <code class="i">.ts</code> 파일은 모듈이 아니라 <strong>전역 스크립트</strong>로 취급됩니다.
+        그러면 <code class="i">ts1.ts</code>의 <code class="i">add</code>와 <code class="i">ts2.ts</code>의 <code class="i">add</code>가 같은 전역 공간에서 충돌해
+        "중복 선언" 에러가 납니다. <code class="i">export {}</code> 한 줄이 그 파일을 모듈로 만들어 스코프를 분리해 줍니다.
+        (아무것도 내보내지 않는, 순수한 선언용 한 줄입니다.)
+      </p>
+    </section>
+
+    <!-- ═══════════════ 01 ═══════════════ -->
+    <section class="sec" id="s01" data-no="01" data-title="기본 타입과 타입 추론">
+      <div class="sec-head">
+        <div class="sec-no">01</div>
+        <h2>기본 타입과 타입 추론</h2>
+      </div>
+
+      <p>
+        원시 타입은 <strong>전부 소문자</strong>입니다. <code class="i">String</code>(대문자)은 다른 것이니 쓰지 마세요.
+      </p>
+
+<pre class="code"><code>const car: string = "BMW";
+let age: number = 23;
+let isAdult: boolean = false;
+let n: null = null;
+let u: undefined = undefined;
+
+let fruits: string[] = ["사과", "바나나", "딸기"];
+// fruits.push(95);   // 에러: number는 string[]에 못 들어감</code></pre>
+
+      <h3>타입을 언제 쓰고 언제 생략하나</h3>
+      <p>
+        TS는 초기값을 보고 타입을 스스로 정합니다(<strong>타입 추론</strong>). 추론이 정확하면 표기는 생략하는 게 관례입니다.
+        표기가 필요한 건 <em>초기값만으로는 의도를 알 수 없을 때</em>입니다.
+      </p>
+
+<pre class="code"><code>let fruits2 = ["사과", "바나나"];   // string[] 으로 추론됨 → 표기 불필요
+
+let userAddr;                      // 초기값 없음 → any (위험)
+let score: number;                 // ← 이렇게 의도를 밝혀야 함
+
+let mixed: (string | number)[] = ["사과", 78];  // 섞을 의도는 추론 못함 → 표기 필요</code></pre>
+
+      <h3>const 와 let 은 추론 결과가 다르다 (중요)</h3>
+      <p>
+        <code class="i">ts2.ts</code>에 <code class="i">const userName1 = "bob"</code>이 그냥 적혀 있었는데, 여기에 리터럴 타입 개념이 숨어 있습니다.
+        <code class="i">const</code>는 값이 바뀔 수 없으니 <strong>그 값 자체가 타입</strong>이 되고, <code class="i">let</code>은 바뀔 수 있으니 넓은 타입이 됩니다.
+      </p>
+
+<pre class="code"><code>const userName1 = "bob";   // 타입: "bob"   (리터럴 타입)
+let   userName2 = "Tom";   // 타입: string
+// userName2 = 3;          // 에러: number는 string이 아님</code></pre>
+
+      <div class="call">
+        <div class="tag">여기서 리터럴 타입이 나온다</div>
+        <p>
+          <code class="i">"bob"</code>처럼 <strong>값 하나가 곧 타입</strong>인 것을 리터럴 타입이라고 합니다.
+          이걸 <code class="i">|</code>로 이어 붙인 게 뒤에 계속 나오는 <code class="i">type Filter = "all" | "active" | "completed"</code> 같은 패턴입니다.
+        </p>
+      </div>
+
+      <h3>헷갈리는 둘: <code class="i">(A|B)[]</code> vs <code class="i">A[]|B[]</code></h3>
+      <div class="pair">
+        <div class="pane pane-good">
+          <div class="pane-label">✓ (string | number)[]</div>
+<pre class="code"><code>let a: (string | number)[];
+a = ["사과", 1, "배"];  // OK
+a.push(2);              // OK
+// 요소 하나하나가 string 또는 number</code></pre>
+        </div>
+        <div class="pane pane-bad">
+          <div class="pane-label">✗ string[] | number[]</div>
+<pre class="code"><code>let b: string[] | number[];
+b = ["사과", "배"];     // OK (string[])
+// b = ["사과", 1];     // 에러: 섞을 수 없음
+// b.push(1);           // 에러: 배열 전체가
+//   string[]인지 number[]인지 아직 모름</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════ 02 ═══════════════ -->
+    <section class="sec" id="s02" data-no="02" data-title="readonly 배열과 as const">
+      <div class="sec-head">
+        <div class="sec-no">02</div>
+        <h2>readonly 배열과 as const</h2>
+      </div>
+
+      <p>
+        <code class="i">const</code>는 <strong>변수 재할당</strong>만 막습니다. 배열 <em>내용</em>은 얼마든지 바꿀 수 있습니다.
+        내용까지 잠그려면 <code class="i">readonly</code>가 필요합니다.
+      </p>
+
+<pre class="code"><code>const vegetables: ReadonlyArray&lt;string&gt; = ["carrot", "broccoli"];
+const vegetables2: readonly string[]     = ["carrot", "broccoli"]; // 위와 완전히 동일
+const scores2: readonly number[]         = [100, 95, 85];
+
+// vegetables.push("potato");  // 에러: readonly 배열엔 push가 없음
+// scores2[0] = 1;             // 에러: 읽기 전용 인덱스</code></pre>
+
+      <p>
+        그래서 <strong>바꾸는 대신 새로 만듭니다.</strong> 원본은 그대로 두고 복사본을 만드는 이 방식이 리액트 등에서 쓰는 기본 습관입니다.
+      </p>
+
+<pre class="code"><code>const newArray = [...scores2, 85];   // number[] — 새 배열이라 수정 가능
+console.log(newArray);               // [100, 95, 85, 85]</code></pre>
+
+      <h3><code class="i">as const</code> — 전체를 통째로 얼리기</h3>
+      <p>
+        값 뒤에 <code class="i">as const</code>를 붙이면 그 안의 모든 값이 <strong>리터럴 타입 + readonly</strong>가 됩니다.
+        배열은 덤으로 <strong>튜플</strong>로 바뀝니다(→ 다음 장).
+      </p>
+
+<pre class="code"><code>const person2 = ["Alice", 25] as const;
+// 타입: readonly ["Alice", 25]
+// person2[0] = "three";   // 에러: 읽기 전용
+
+const CONFIG = { mode: "dark", retry: 3 } as const;
+// 타입: { readonly mode: "dark"; readonly retry: 3 }
+// as const 없으면 mode는 그냥 string으로 넓어짐</code></pre>
+
+      <div class="call tip">
+        <div class="tag">쓰는 순간</div>
+        <p>
+          고정된 옵션 목록·설정 객체를 만들 때 <code class="i">as const</code>를 붙이면
+          그 값들로 리터럴 유니온 타입을 뽑아낼 수 있습니다(→ <a href="#s05" style="color:var(--good)">05장 enum 대안</a>).
+        </p>
+      </div>
+    </section>
+
+    <!-- ═══════════════ 03 ═══════════════ -->
+    <section class="sec" id="s03" data-no="03" data-title="튜플 — 위치가 의미를 갖는 배열">
+      <div class="sec-head">
+        <div class="sec-no">03</div>
+        <h2>튜플 — 위치가 의미를 갖는 배열</h2>
+      </div>
+
+      <p>
+        배열인데 <strong>길이가 고정</strong>이고 <strong>각 자리의 타입이 정해진</strong> 것. 자리마다 뜻이 다를 때 씁니다.
+      </p>
+
+<pre class="code"><code>const person: [string, number] = ["Alice", 25];
+
+console.log(person[0].toLowerCase());  // 0번은 string인 걸 아니까 문자열 메서드 OK
+// console.log(person[1].toLowerCase()); // 에러: 1번은 number
+
+person[0] = "Tiger";   // OK
+person[1] = 26;        // OK
+// person[1] = "26";   // 에러</code></pre>
+
+      <h3>왜 굳이 튜플인가 — 반환값에서 차이가 드러난다</h3>
+      <div class="pair">
+        <div class="pane pane-good">
+          <div class="pane-label">✓ 튜플 반환</div>
+<pre class="code"><code>function getUserInfo(): [string, number, boolean] {
+  return ["Bob", 30, true];
+}
+const [username, age1, isUserAdult] = getUserInfo();
+// username   : string
+// age1       : number
+// isUserAdult: boolean
+username.toUpperCase();  // OK</code></pre>
+        </div>
+        <div class="pane pane-bad">
+          <div class="pane-label">✗ 유니온 배열 반환</div>
+<pre class="code"><code>function getUserInfo2(): (string | number | boolean)[] {
+  return ["Bob", 30, true];
+}
+const [u2] = getUserInfo2();
+// u2 : string | number | boolean
+// u2.toUpperCase();  // 에러: 문자열인지 확신 못함
+// 위치 정보가 통째로 사라졌다</code></pre>
+        </div>
+      </div>
+
+      <p>
+        React의 <code class="i">const [state, setState] = useState(0)</code>가 바로 이 튜플 구조입니다.
+        빈 값으로 시작할 땐 배열과 튜플의 표기를 구분해 두세요.
+      </p>
+
+<pre class="code"><code>const array1: number[] = [];            // 몇 개든 상관없는 number 배열
+const tuple1: [number, string] = [0, ""]; // 반드시 (number, string) 두 칸
+
+// 추론으로 튜플 만들기
+const point = [10, 20] as const;        // readonly [10, 20]</code></pre>
+    </section>
+
+    <!-- ═══════════════ 04 ═══════════════ -->
+    <section class="sec" id="s04" data-no="04" data-title="any · unknown · void · never">
+      <div class="sec-head">
+        <div class="sec-no">04</div>
+        <h2>any · unknown · void · never</h2>
+      </div>
+
+      <p>
+        네 개를 따로 외우면 계속 헷갈립니다. <strong>"값이 몇 개나 들어올 수 있나"</strong>를 축으로 한 줄에 세우면 정리됩니다.
+      </p>
+
+      <div class="tablewrap">
+        <table>
+          <thead>
+            <tr><th>타입</th><th>뜻</th><th>대입</th><th>그 값으로 할 수 있는 것</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>any</code></td><td>검사 포기</td><td>아무거나</td><td>아무거나 (오타도 통과 → 사실상 JS)</td></tr>
+            <tr><td><code>unknown</code></td><td>아직 모름</td><td>아무거나</td><td>좁히기 전엔 <strong>아무것도</strong></td></tr>
+            <tr><td><code>void</code></td><td>반환값 없음</td><td>(함수 반환 자리)</td><td>반환값을 쓰지 말 것</td></tr>
+            <tr><td><code>never</code></td><td>값이 존재할 수 없음</td><td><strong>아무것도 불가</strong></td><td>도달 불가 표시 · 항상 throw</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>any 는 왜 위험한가</h3>
+<pre class="code"><code>let randomValue: any = 10;
+randomValue = "hello";
+console.log(randomValue.length);   // 통과 (5)
+randomValue = true;
+console.log(randomValue.length);   // 여전히 통과! → 런타임에 undefined
+randomValue.foo().bar();           // 이것도 통과 → 런타임 크래시</code></pre>
+
+      <h3>unknown 은 "확인 후 사용"을 강제한다</h3>
+<pre class="code"><code>let unknownValue: unknown = 10;
+unknownValue = "Hello";
+
+// console.log(unknownValue.length);   // 에러: 뭔지 모르니 접근 불가
+
+if (typeof unknownValue === "string") {
+  const strLength: number = unknownValue.length;  // 여기선 string으로 좁혀짐 → OK
+  console.log(strLength);
+}</code></pre>
+
+      <div class="call">
+        <div class="tag">한 줄 요약</div>
+        <p>
+          외부에서 들어와 타입을 모르는 값(API 응답, <code class="i">JSON.parse</code> 결과, 라이브러리 반환)은
+          <strong>any 대신 unknown</strong>으로 받고, 검사한 뒤에 쓰세요. any는 에러를 없애는 게 아니라 <em>미루는</em> 것입니다.
+        </p>
+      </div>
+
+      <h3>void — 반환하지 않는다는 선언</h3>
+<pre class="code"><code>function message(msg: string): void {
+  console.log(msg);        // return 문이 없음
+}
+
+const printLength = (text: string | null): void => {
+  if (text === null) {
+    console.log("No text");
+    return;                // 값 없는 return은 void와 모순되지 않음
+  }
+  console.log(`${text.length}`);
+};
+printLength(null);
+
+const numbers = [1, 2, 3, 4, 5];
+numbers.forEach((num): void => {   // 콜백이 값을 돌려주지 않는다는 뜻
+  console.log(num);
+});</code></pre>
+
+      <h3>never — 실전 용도는 "빠뜨린 케이스 잡기"</h3>
+      <p>
+        <code class="i">ts1.ts</code>의 <code class="i">handleValue</code>가 어렵게 느껴진 건, never를 <em>타입</em>이 아니라 <strong>안전장치</strong>로 쓴 코드이기 때문입니다.
+        유니온의 모든 갈래를 처리하고 나면 마지막 <code class="i">else</code>에 남는 타입은 <code class="i">never</code>입니다.
+        여기에 <code class="i">const unreachable: never = x</code>를 두면, <strong>나중에 유니온에 타입을 하나 추가했을 때 이 줄에서 컴파일 에러가 납니다</strong> — 처리를 빠뜨렸다는 신호죠.
+      </p>
+
+<pre class="code"><code>const handleValue = (x: string | number | boolean | object): void => {
+  if (typeof x === "string") {
+    // x: string
+  } else if (typeof x === "number") {
+    // x: number
+  } else if (typeof x === "boolean") {
+    // x: boolean
+  } else if (typeof x === "object") {
+    // x: object
+  } else {
+    const unreachable: never = x;   // 여기 도달 = 처리 안 한 타입이 있다
+    throw new Error("Unhandled type : " + unreachable);
+  }
+};
+
+handleValue("Hello");
+handleValue(42);
+handleValue(true);
+handleValue({ name: "John" });</code></pre>
+
+      <div class="call tip">
+        <div class="tag">이걸 exhaustiveness check 라고 부른다</div>
+        <p>
+          유니온 <code class="i">"idle" | "loading" | "success"</code>에 <code class="i">"error"</code>를 추가하는 순간,
+          switch의 default에서 never 대입이 깨지며 "여기도 고쳐라"라고 알려줍니다. 상태 관리 코드에서 아주 자주 씁니다.
+        </p>
+      </div>
+    </section>
+
+    <!-- ═══════════════ 05 ═══════════════ -->
+    <section class="sec" id="s05" data-no="05" data-title="enum 과 요즘의 대안">
+      <div class="sec-head">
+        <div class="sec-no">05</div>
+        <h2>enum 과 요즘의 대안</h2>
+      </div>
+
+      <p>관련 상수들을 한 이름으로 묶는 문법입니다. 값을 생략하면 앞 값 +1로 자동 증가합니다.</p>
+
+<pre class="code"><code>enum Color {
+  Red = 1,   // 1
+  Green,     // 2 (자동)
+  Blue,      // 3 (자동)
+}
+
+console.log(Color.Red);        // 1
+let favoriteColor: Color = Color.Blue;
+console.log(favoriteColor);    // 3</code></pre>
+
+      <div class="call trap">
+        <div class="tag">알아둘 예외</div>
+        <p>
+          "타입은 컴파일 후 사라진다"의 <strong>거의 유일한 예외가 enum</strong>입니다.
+          enum은 실제 JS 객체를 만들어 냅니다. 그래서 번들 크기·트리셰이킹 문제로 실무에서는 점점 덜 씁니다.
+        </p>
+      </div>
+
+      <h3>대안 1 — 리터럴 유니온 (가장 흔함)</h3>
+<pre class="code"><code>type Status = "idle" | "loading" | "success" | "error";
+let currentStatus: Status;
+currentStatus = "idle";
+// currentStatus = "done";   // 에러 — 오타를 즉시 잡아준다
+
+// 컴파일 결과에 아무 코드도 남지 않는다</code></pre>
+
+      <h3>대안 2 — <code class="i">as const</code> 객체 (값도 필요할 때)</h3>
+<pre class="code"><code>const Color = { Red: 1, Green: 2, Blue: 3 } as const;
+
+type Color = typeof Color[keyof typeof Color];   // 1 | 2 | 3
+const c: Color = Color.Blue;</code></pre>
+      <p>
+        <code class="i">typeof</code>와 <code class="i">keyof</code>가 섞여 처음엔 안 읽히는 표현입니다. 지금은 "값에서 타입을 뽑는 관용구"로만 기억하고,
+        <a href="#s12" style="color:var(--accent)">12장</a>에서 두 연산자를 따로 봅시다.
+      </p>
+    </section>
+
+    <!-- ═══════════════ 06 ═══════════════ -->
+    <section class="sec" id="s06" data-no="06" data-title="type 별칭 — 타입에 이름 붙이기">
+      <div class="sec-head">
+        <div class="sec-no">06</div>
+        <h2>type 별칭 — 타입에 이름 붙이기</h2>
+      </div>
+
+      <p>
+        <code class="i">type</code>은 <strong>새 타입을 만드는 게 아니라 이미 있는 타입에 이름을 붙이는</strong> 문법입니다.
+        같은 표기를 여러 곳에 반복하지 않으려고 씁니다.
+      </p>
+
+<pre class="code"><code>// 반복: let userAddr: string | number; let shopAddr: string | number; ...
+type Addr = string | number;
+let userAddr: Addr;
+let shopAddr: Addr;</code></pre>
+
+      <h3>담을 수 있는 것 — 사실상 전부</h3>
+<pre class="code"><code>type Status  = "idle" | "loading" | "success" | "error";  // 리터럴 유니온
+type Point   = { x: number; y: number };                  // 객체
+type PointTuple = [number, number];                       // 튜플
+type Handler = (e: MouseEvent) =&gt; void;                   // 함수
+
+let point: Point = { x: 10, y: 20 };
+const tuple2: PointTuple = [10, 20];</code></pre>
+
+      <h3><code class="i">&amp;</code> 로 합치기 (intersection)</h3>
+      <p><code class="i">|</code>가 "둘 중 하나"라면 <code class="i">&amp;</code>는 <strong>"둘 다"</strong>입니다. 기존 타입에 속성을 더할 때 씁니다.</p>
+
+<pre class="code"><code>type Name = {
+  firstName: string;
+  lastName: string;
+};
+
+type Employee = Name &amp; {
+  employeeId: number;
+};
+
+let employee: Employee = {
+  firstName: "John",
+  lastName: "Doe",
+  employeeId: 1234,      // 세 개 다 있어야 함
+};</code></pre>
+
+<pre class="code"><code>// ts2.ts 의 예 — 두 인터페이스를 모두 만족하는 타입
+interface Developer { name: string; skills: string[]; }
+interface Manager   { name: string; age: number; manage(): void; }
+
+type DevManager = Developer &amp; Manager;
+
+const person2: DevManager = {
+  name: "Alice",
+  skills: ["javascript", "typescript"],
+  age: 26,
+  manage(): void { console.log("do managing"); },
+};
+person2.manage();</code></pre>
+
+      <h3>index signature — 키 이름을 미리 모를 때</h3>
+      <p>
+        "어떤 키가 올지는 모르지만, 값은 전부 string이다"를 표현합니다.
+      </p>
+
+<pre class="code"><code>type Member = {
+  [key: string]: string;    // 키는 아무 문자열, 값은 반드시 string
+};
+
+let member: Member = { id: "user01", name: "alice" };
+let member2: Member = { id: "user01", name: "alice", addr: "seoul" };  // 나중에 추가 OK
+// let member3: Member = { id: "user01", age: 20 };  // 에러: number 값 불가</code></pre>
+
+      <div class="call trap">
+        <div class="tag">대가</div>
+        <p>
+          편한 대신 <strong>오타를 못 잡습니다.</strong> <code class="i">member.nmae</code>도 통과합니다(값 타입만 맞으면 되니까).
+          키를 알고 있다면 index signature 대신 키를 하나씩 적는 편이 훨씬 안전합니다.
+          "키 목록은 정해져 있는데 값 타입이 같다"면 <code class="i">Record</code>가 정답입니다(→ <a href="#s12" style="color:var(--warn)">12장</a>).
+        </p>
+      </div>
+    </section>
+
+    <!-- ═══════════════ 07 ═══════════════ -->
+    <section class="sec" id="s07" data-no="07" data-title="interface — 객체의 계약서">
+      <div class="sec-head">
+        <div class="sec-no">07</div>
+        <h2>interface — 객체의 계약서</h2>
+      </div>
+
+      <p>
+        객체의 모양을 정의합니다. <code class="i">object</code> 타입만 쓰면 왜 부족한지부터 보면 필요성이 분명해집니다.
+      </p>
+
+<pre class="code"><code>let user1: object;
+user1 = { name: "Alice", age: 25 };
+console.log(user1);
+// console.log(user1.name);   // 에러: object에는 name이 있다는 정보가 없다
+
+interface User {
+  name: string;
+  age: number;
+}
+let user: User = { name: "David", age: 30 };
+console.log(user.age);        // OK — 어떤 키가 있는지 TS가 안다</code></pre>
+
+      <h3><code class="i">?</code> — 있을 수도, 없을 수도</h3>
+<pre class="code"><code>interface User2 {
+  name: string;
+  age: number;
+  gender?: string;     // 선택적 속성 → 타입은 string | undefined
+}
+
+let user2: User2 = { name: "David", age: 30 };                   // OK
+let user3: User2 = { name: "David", age: 30, gender: "Male" };   // OK
+user3.name = "Teddy";
+
+// user3.gender.toUpperCase();  // 에러: undefined일 수 있음
+user3.gender?.toUpperCase();    // 옵셔널 체이닝으로 안전하게</code></pre>
+
+      <h3><code class="i">readonly</code> — 생성 후 못 바꾸는 속성</h3>
+<pre class="code"><code>interface Car {
+  readonly model: string;
+  year: number;
+}
+const car1: Car = { model: "Toyota", year: 2026 };
+car1.year = 2027;          // OK
+// car1.model = "hyundai"; // 에러: 읽기 전용</code></pre>
+
+      <h3>인덱스 시그니처의 숨은 규칙 (여기서 막혔던 부분)</h3>
+      <p>
+        <code class="i">ts1.ts</code>의 <code class="i">Student</code>가 왜 <code class="i">[key: number]</code>였는지에 답이 있습니다.
+        <strong>인덱스 시그니처를 선언하면, 같은 종류의 키를 가진 다른 속성들도 그 값 타입을 따라야 합니다.</strong>
+      </p>
+
+      <div class="pair">
+        <div class="pane pane-bad">
+          <div class="pane-label">✗ string 인덱스라면</div>
+<pre class="code"><code>interface Student {
+  name: string;
+  id: number;               // ← 에러!
+  [key: string]: string;
+}
+// name, id 모두 "문자열 키"이므로
+// 값이 전부 string이어야 한다</code></pre>
+        </div>
+        <div class="pane pane-good">
+          <div class="pane-label">✓ number 인덱스라면</div>
+<pre class="code"><code>interface Student {
+  name: string;
+  id: number;               // OK
+  [key: number]: string;    // 숫자 키만 제약
+}
+const student: Student = {
+  name: "John", id: 12345,
+  1: "A", 2: "B",
+};</code></pre>
+        </div>
+      </div>
+
+<pre class="code"><code>// 값 범위까지 좁히면 오타는 물론 잘못된 등급도 막힌다
+type Score = "A+" | "A" | "B" | "C" | "D" | "F";
+
+interface Student2 {
+  name: string;
+  id: number;
+  [key: number]: Score;
+}</code></pre>
+
+      <h3>함수 타입 정의 — 세 가지 표기</h3>
+<pre class="code"><code>// 1) 화살표 표기 — 실무에서 가장 흔함
+type Add1 = (a: number, b: number) =&gt; number;
+
+// 2) 객체 안의 호출 시그니처
+type Func1 = {
+  (a: number, b: number): number;
+};
+
+// 3) interface 의 호출 시그니처
+interface Add {
+  (a: number, b: number): number;
+}
+
+const add: Add = function (a, b) {   // a, b 타입은 Add에서 추론됨 → 생략 가능
+  return a + b;
+};
+console.log(add(2, 3));   // 5
+
+// 인라인 지정 (선언과 동시에)
+function sub(a: number, b: number): number {
+  return a - b;
+}</code></pre>
+
+      <h3>extends 와 implements</h3>
+<pre class="code"><code>interface Person {
+  name: string;
+  age: number;
+}
+
+// interface 끼리 확장
+interface Employee2 extends Person {
+  employeeId: number;
+  department: string;
+}
+let employee2: Employee2 = {
+  name: "Kim", age: 30, employeeId: 2001, department: "HR",
+};
+
+// interface 는 type(객체 형태) 도 확장할 수 있다
+type Menu = { name: string; category: string; price: number };
+
+interface BestMenu2 extends Menu {
+  rank: number;
+}
+const best2: BestMenu2 = {
+  name: "americano", category: "coffee", price: 4500, rank: 3,
+};
+
+// 반대로 type 이 interface 를 가져다 쓸 수도 있다
+interface Menu2 { name: string; category: string; price: number }
+type BestMenu3 = Menu2 &amp; { rank: number };</code></pre>
+
+      <p>
+        <code class="i">implements</code>는 <strong>클래스가 그 계약을 지키겠다는 약속</strong>입니다.
+        인터페이스에 적힌 건 반드시 구현해야 하고, 그 외 멤버는 자유롭게 추가할 수 있습니다.
+      </p>
+
+<pre class="code"><code>interface Car2 {
+  color: string;
+  wheels: number;
+  start(): void;
+}
+
+class Truck implements Car2 {
+  color: string;
+  wheels: number;
+
+  constructor(color: string, wheels: number) {
+    this.color = color;
+    this.wheels = wheels;
+  }
+
+  start(): void {              // 계약된 메서드 — 빠뜨리면 컴파일 에러
+    console.log("Truck started");
+  }
+
+  drive(): void {              // 자기만의 메서드 추가는 자유
+    console.log("Truck is driving");
+  }
+}
+
+const myTruck = new Truck("red", 6);
+myTruck.start();</code></pre>
+    </section>
+
+    <!-- ═══════════════ 08 ═══════════════ -->
+    <section class="sec" id="s08" data-no="08" data-title="type vs interface — 언제 뭘 쓰나">
+      <div class="sec-head">
+        <div class="sec-no">08</div>
+        <h2>type vs interface — 언제 뭘 쓰나</h2>
+      </div>
+
+      <p>객체 모양을 정의할 땐 거의 같습니다. 차이는 <strong>객체가 아닌 것</strong>과 <strong>재선언</strong>에서 갈립니다.</p>
+
+      <div class="tablewrap">
+        <table>
+          <thead>
+            <tr><th>할 수 있는 것</th><th>type</th><th>interface</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>객체 모양 정의</td><td>가능</td><td>가능</td></tr>
+            <tr><td>유니온 <code>A | B</code></td><td><strong>가능</strong></td><td>불가</td></tr>
+            <tr><td>튜플 · 원시 타입 별칭</td><td><strong>가능</strong></td><td>불가</td></tr>
+            <tr><td>확장</td><td><code>&amp;</code> 로 합성</td><td><code>extends</code></td></tr>
+            <tr><td>같은 이름 재선언(선언 병합)</td><td>불가 (중복 에러)</td><td><strong>가능 — 자동 합쳐짐</strong></td></tr>
+            <tr><td>클래스 <code>implements</code></td><td>가능(객체 형태면)</td><td>가능</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+<pre class="code"><code>// interface 만 되는 것: 선언 병합
+interface Window { myApp: string; }
+interface Window { version: number; }
+// → Window 는 myApp, version 을 모두 가진 하나의 타입이 된다
+//   (외부 라이브러리 타입을 확장할 때 유용)
+
+// type 만 되는 것
+type Addr   = string | number;      // 유니온
+type Coord  = [number, number];     // 튜플
+type Getter = () =&gt; string;         // 함수 별칭</code></pre>
+
+      <div class="call">
+        <div class="tag">실무 기준</div>
+        <p>
+          <strong>객체·클래스의 계약은 interface, 그 외 조합(유니온·튜플·함수·유틸리티 결과)은 type.</strong>
+          다만 팀·프로젝트 안에서 일관되게 쓰는 것이 어느 쪽을 고르느냐보다 중요합니다.
+        </p>
+      </div>
+    </section>
+
+    <!-- ═══════════════ 09 ═══════════════ -->
+    <section class="sec" id="s09" data-no="09" data-title="타입 좁히기와 판별 유니온">
+      <div class="sec-head">
+        <div class="sec-no">09</div>
+        <h2>타입 좁히기와 판별 유니온</h2>
+      </div>
+
+      <p>
+        유니온 타입은 만드는 것보다 <strong>쓰는 쪽이 어렵습니다.</strong> <code class="i">string | number</code>인 값에 대고
+        문자열 메서드를 부를 수 없으니까요. 코드로 "지금 이건 string이다"를 증명해 주는 과정이 <strong>좁히기(narrowing)</strong>입니다.
+      </p>
+
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>방법</th><th>쓰는 곳</th><th>예</th></tr></thead>
+          <tbody>
+            <tr><td><code>typeof</code></td><td>원시 타입</td><td><code>typeof x === "string"</code></td></tr>
+            <tr><td><code>=== null</code></td><td>null / undefined</td><td><code>if (text === null) return;</code></td></tr>
+            <tr><td>truthy 검사</td><td>빈 값 걸러내기</td><td><code>if (!title) return;</code></td></tr>
+            <tr><td><code>in</code></td><td>객체에 그 키가 있나</td><td><code>if ("call" in gift)</code></td></tr>
+            <tr><td><code>instanceof</code></td><td>클래스 인스턴스</td><td><code>e.target instanceof HTMLInputElement</code></td></tr>
+            <tr><td>판별 속성</td><td>객체 유니온 (권장)</td><td><code>if (gift.type === "car")</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>판별 유니온 (discriminated union)</h3>
+      <p>
+        각 인터페이스에 <strong>서로 다른 리터럴 값을 가진 공통 키</strong>(보통 <code class="i">type</code>, <code class="i">kind</code>)를 하나 두는 패턴입니다.
+        그 키만 비교하면 TS가 나머지 속성까지 전부 알아냅니다.
+      </p>
+
+<pre class="code"><code>interface Car {
+  type: "car";           // ← 판별 키 (리터럴 타입)
+  color: string;
+  start(): void;
+}
+
+interface Mobile {
+  type: "mobile";        // ← 판별 키
+  color: string;
+  call(): void;
+}
+
+const getGift = (gift: Car | Mobile) =&gt; {
+  console.log(gift.color);      // 공통 속성은 검사 없이 접근 가능
+
+  if (gift.type === "car") {
+    gift.start();               // 여기서 gift는 Car로 확정
+  } else {
+    gift.call();                // 여기서는 Mobile로 확정
+  }
+};</code></pre>
+
+      <div class="call trap">
+        <div class="tag">원본 코드에 있던 실수</div>
+        <p>
+          <code class="i">ts2.ts</code>에는 <code class="i">color: "string"</code>이라고 <strong>따옴표가 붙어</strong> 있습니다.
+          이건 "문자열 타입"이 아니라 <strong><code class="i">"string"</code>이라는 글자만 허용하는 리터럴 타입</strong>입니다.
+          <code class="i">color: "red"</code>를 넣으면 에러가 납니다. 따옴표 없는 <code class="i">color: string</code>이 맞습니다 —
+          <a href="#s01" style="color:var(--warn)">01장</a>의 리터럴 타입이 여기서 조용히 발목을 잡는 대표적인 경우입니다.
+        </p>
+      </div>
+
+      <h3>사용자 정의 타입 가드</h3>
+      <p>검사 로직이 길어지면 함수로 빼고, 반환 타입에 <code class="i">x is T</code>를 씁니다. 이걸 써야 호출한 쪽에서도 좁혀집니다.</p>
+
+<pre class="code"><code>function isCar(gift: Car | Mobile): gift is Car {
+  return gift.type === "car";
+}
+
+if (isCar(gift)) {
+  gift.start();     // Car로 좁혀짐 (반환 타입이 boolean 이었다면 안 됨)
+}</code></pre>
+    </section>
+
+    <!-- ═══════════════ 10 ═══════════════ -->
+    <section class="sec" id="s10" data-no="10" data-title="함수 — 매개변수와 반환값">
+      <div class="sec-head">
+        <div class="sec-no">10</div>
+        <h2>함수 — 매개변수와 반환값</h2>
+      </div>
+
+<pre class="code"><code>// 두 수를 더해 출력 — 반환이 없으므로 void
+const add = (a: number, b: number): void =&gt; {
+  console.log(a + b);
+};
+
+// 19 초과면 true
+const isAdult = (age: number): boolean =&gt; {
+  return age &gt; 19;      // age &gt; 19 ? true : false 는 중복 — 비교식 자체가 boolean
+};
+console.log(isAdult(20));   // true</code></pre>
+
+      <div class="call">
+        <div class="tag">반환 타입은 써야 하나</div>
+        <p>
+          TS가 알아서 추론하므로 생략해도 동작합니다. 다만 <strong>여러 곳에서 쓰이는 함수에는 명시</strong>하는 편이 좋습니다.
+          구현을 잘못 고쳤을 때 <em>호출한 쪽</em>이 아니라 <em>함수 자신의 줄</em>에서 에러가 나기 때문입니다.
+        </p>
+      </div>
+
+      <h3>선택적 매개변수 <code class="i">?</code> vs 기본값</h3>
+      <div class="pair">
+        <div class="pane">
+          <div class="pane-label" style="color:var(--ink-3)">? — 안 줄 수도 있음</div>
+<pre class="code"><code>const hello = (name?: string): void =&gt; {
+  // name 의 타입: string | undefined
+  console.log(`Hello, ${name || "Guest"}`);
+};
+hello();        // Hello, Guest
+hello("Sam");   // Hello, Sam</code></pre>
+        </div>
+        <div class="pane">
+          <div class="pane-label" style="color:var(--ink-3)">기본값 — 안 주면 이 값</div>
+<pre class="code"><code>const hello2 = (name: string = "Guest"): void =&gt; {
+  // name 의 타입: string (undefined 아님)
+  console.log(`Hello, ${name}`);
+};
+hello2();       // Hello, Guest
+hello2("Sam");  // Hello, Sam</code></pre>
+        </div>
+      </div>
+      <p>
+        기본값이 있으면 <code class="i">?</code>는 필요 없고, 함수 안에서 <code class="i">undefined</code> 체크도 필요 없습니다.
+        또 <strong>선택적 매개변수는 반드시 필수 매개변수 뒤에</strong> 와야 합니다.
+      </p>
+
+      <h3>나머지 매개변수 (rest)</h3>
+<pre class="code"><code>const count = (...nums: number[]): number =&gt; {
+  return nums.length;        // 원본 예제는 개수를 셌다
+};
+console.log(count(1, 2, 3));              // 3
+console.log(count(1, 2, 3, 4, 5, 6, 7));  // 7
+
+// 진짜 합계라면
+const sum = (...nums: number[]): number =&gt; {
+  return nums.reduce((acc, n) =&gt; acc + n, 0);
+};
+console.log(sum(1, 2, 3));   // 6</code></pre>
+
+      <h3>콜백은 타입을 안 써도 된다 (contextual typing)</h3>
+<pre class="code"><code>const numbers = [1, 2, 3, 4, 5];
+
+numbers.forEach((num) =&gt; console.log(num));   // num: number 로 자동 추론
+numbers.filter((n) =&gt; n &gt; 2);                 // n: number
+todos.filter((todo) =&gt; !todo.completed);      // todo: Todo
+
+// 배열의 타입을 아니까 콜백 매개변수 타입도 안다 → 굳이 쓰지 말 것</code></pre>
+    </section>
+
+    <!-- ═══════════════ 11 ═══════════════ -->
+    <section class="sec" id="s11" data-no="11" data-title="제네릭 — 타입을 나중에 정하기">
+      <div class="sec-head">
+        <div class="sec-no">11</div>
+        <h2>제네릭 — 타입을 나중에 정하기</h2>
+      </div>
+
+      <p>필요성이 드러나는 과정을 순서대로 보면 이해가 빠릅니다.</p>
+
+<pre class="code"><code>// 1단계: 유니온으로 버티기 — 타입이 늘 때마다 함수를 고쳐야 한다
+const getSize = (arr: number[] | string[]): number =&gt; arr.length;
+
+getSize([1, 2, 3]);        // OK
+getSize(["a", "b", "c"]);  // OK
+// getSize([true, false]); // 에러 → boolean[] 도 추가해야 하나? Date[] 는?</code></pre>
+
+<pre class="code"><code>// 2단계: any 로 도망가기 — 되긴 되지만 정보가 사라진다
+const getSizeAny = (arr: any[]): number =&gt; arr.length;
+// 반환 요소를 쓸 때 타입이 전부 any 가 되어 검사가 무력화된다</code></pre>
+
+<pre class="code"><code>// 3단계: 제네릭 — 호출할 때 타입이 정해지고, 그 정보가 그대로 유지된다
+const getGenericSize = &lt;T&gt;(arr: T[]): number =&gt; arr.length;
+
+function getGenericSize2&lt;T&gt;(arr: T[]) {   // function 선언 방식
+  return arr.length;
+}
+
+console.log(getGenericSize([1, 2, 3]));           // T = number
+console.log(getGenericSize2(["a", "b", "c"]));    // T = string
+console.log(getGenericSize([true, false, true])); // T = boolean — 함수는 그대로</code></pre>
+
+      <div class="call">
+        <div class="tag">any 와의 결정적 차이</div>
+        <p>
+          any는 타입 정보를 <strong>버리고</strong>, 제네릭은 <strong>연결해 둡니다.</strong>
+          <code class="i">&lt;T&gt;(arr: T[]) =&gt; T</code>는 "number 배열을 넣으면 number가 나온다"는 관계를 그대로 기억합니다.
+        </p>
+      </div>
+
+      <h3>인터페이스에 쓰기 — 껍데기는 같고 속만 다를 때</h3>
+<pre class="code"><code>interface Mobile2&lt;T&gt; {
+  name: string;
+  price: number;
+  option: T;          // option 의 모양만 매번 다르다
+}
+
+const myPhone: Mobile2&lt;{ color: string; coupon: boolean }&gt; = {
+  name: "galaxy",
+  price: 100000,
+  option: { color: "black", coupon: true },
+};
+
+const myTab: Mobile2&lt;string[]&gt; = {
+  name: "galaxy",
+  price: 100000,
+  option: ["pen", "cover"],
+};
+
+myPhone.option.color;   // 타입이 살아 있어서 자동완성까지 된다
+myTab.option[0];</code></pre>
+
+      <h3>제약(<code class="i">extends</code>) — "아무거나"를 좁히기</h3>
+      <p>T가 완전히 자유로우면 함수 안에서 아무것도 못 합니다. 최소한의 조건을 걸어 줍니다.</p>
+
+<pre class="code"><code>// length 를 가진 것만 받겠다
+const logLength = &lt;T extends { length: number }&gt;(x: T): number =&gt; x.length;
+
+logLength("hello");      // 5  (string 에 length 있음)
+logLength([1, 2, 3]);    // 3
+// logLength(42);        // 에러: number 에는 length 가 없다
+
+// 객체와 그 객체의 키만 받겠다 — 아주 자주 쓰는 형태
+const getProp = &lt;T, K extends keyof T&gt;(obj: T, key: K): T[K] =&gt; obj[key];
+
+const user = { id: 1, name: "Alice" };
+getProp(user, "name");    // string 으로 정확히 추론
+// getProp(user, "age");  // 에러: age 라는 키는 없다</code></pre>
+
+      <p>
+        타입 인자에 기본값도 줄 수 있습니다: <code class="i">&lt;T = string&gt;</code>.
+        관례상 <code class="i">T</code>(Type), <code class="i">K</code>(Key), <code class="i">V</code>(Value), <code class="i">E</code>(Element)를 씁니다.
+      </p>
+    </section>
+
+    <!-- ═══════════════ 12 ═══════════════ -->
+    <section class="sec" id="s12" data-no="12" data-title="유틸리티 타입 — 있는 타입 재활용하기">
+      <div class="sec-head">
+        <div class="sec-no">12</div>
+        <h2>유틸리티 타입 — 있는 타입 재활용하기</h2>
+      </div>
+
+      <p>
+        전부 제네릭으로 만들어진 <strong>내장 타입</strong>입니다. 비슷한 타입을 손으로 다시 쓰지 않기 위해 씁니다.
+        기준 타입 하나를 두고 파생시키는 게 핵심입니다.
+      </p>
+
+<pre class="code"><code>interface User {
+  id: number;
+  name: string;
+  age: number;
+  gender: "M" | "F";
+}</code></pre>
+
+      <h3>재료 — keyof 와 typeof</h3>
+<pre class="code"><code>// keyof : 객체 타입의 "키들"을 유니온 타입으로 꺼낸다
+type UserKey = keyof User;        // "id" | "name" | "age" | "gender"
+const uk: UserKey = "id";
+// const uk2: UserKey = "email";  // 에러
+
+// typeof : (타입 자리에서) 값으로부터 타입을 꺼낸다
+const defaultUser = { id: 0, name: "", age: 0, gender: "M" };
+type DefaultUser = typeof defaultUser;</code></pre>
+
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>유틸리티</th><th>하는 일</th><th>결과</th></tr></thead>
+          <tbody>
+            <tr><td><code>Partial&lt;T&gt;</code></td><td>모든 속성을 선택적으로</td><td>수정 폼, PATCH 요청</td></tr>
+            <tr><td><code>Required&lt;T&gt;</code></td><td>모든 속성을 필수로</td><td><code>?</code> 를 전부 제거</td></tr>
+            <tr><td><code>Readonly&lt;T&gt;</code></td><td>모든 속성을 읽기 전용으로</td><td>불변 객체</td></tr>
+            <tr><td><code>Pick&lt;T, K&gt;</code></td><td>지정한 키<strong>만</strong> 남김</td><td>목록용 축약 타입</td></tr>
+            <tr><td><code>Omit&lt;T, K&gt;</code></td><td>지정한 키를 <strong>제거</strong></td><td>id 없는 생성용 타입</td></tr>
+            <tr><td><code>Record&lt;K, V&gt;</code></td><td>키 K, 값 V인 객체</td><td>index signature의 안전한 대안</td></tr>
+            <tr><td><code>Exclude&lt;T, U&gt;</code></td><td>유니온에서 U를 뺌</td><td>타입 뺄셈</td></tr>
+            <tr><td><code>Extract&lt;T, U&gt;</code></td><td>유니온에서 U만 남김</td><td>타입 교집합</td></tr>
+            <tr><td><code>NonNullable&lt;T&gt;</code></td><td>null·undefined 제거</td><td>필터링 후 타입</td></tr>
+            <tr><td><code>ReturnType&lt;F&gt;</code></td><td>함수의 반환 타입</td><td>함수에서 타입 역추출</td></tr>
+            <tr><td><code>Awaited&lt;P&gt;</code></td><td>Promise 안의 타입</td><td>async 반환 풀기</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+<pre class="code"><code>// Partial — 전부 선택적
+type PartialUser = Partial&lt;User&gt;;
+const pUser1: PartialUser = {};                       // OK
+const pUser2: PartialUser = { id: 1 };                // OK
+const pUser3: PartialUser = { id: 1, name: "Alice" }; // OK
+
+// Required — 전부 필수 (Partial 을 되돌림)
+type RequiredUser = Required&lt;PartialUser&gt;;
+const rUser1: RequiredUser = { id: 1, name: "Bob", age: 30, gender: "M" };
+
+// Readonly — 전부 읽기 전용
+type ReadUser = Readonly&lt;User&gt;;
+const reUser: ReadUser = { id: 1, name: "Bob", age: 30, gender: "M" };
+// reUser.name = "Alice";   // 에러</code></pre>
+
+<pre class="code"><code>type Menu = { name: string; category: string; price: number };
+
+// Omit — 빼기
+type BestMenu = Omit&lt;Menu, "price"&gt;;                   // name, category
+type NameOnly = Omit&lt;Menu, "price" | "category"&gt;;      // 여러 개는 유니온으로
+
+// Pick — 고르기
+type MenuOnlyCategory = Pick&lt;Menu, "category"&gt;;        // category
+
+const bestMenu: BestMenu = { name: "peperoni pizza", category: "pizza" };
+const only: MenuOnlyCategory = { category: "pizza" };</code></pre>
+
+      <div class="call tip">
+        <div class="tag">Omit / Pick 고르는 기준</div>
+        <p>
+          <strong>남길 게 적으면 Pick, 뺄 게 적으면 Omit.</strong>
+          그리고 원본에 속성이 추가됐을 때 Pick은 그대로지만 Omit은 자동으로 따라옵니다 — 서버 응답 타입에서 파생시킬 땐 Omit이 편합니다.
+        </p>
+      </div>
+
+<pre class="code"><code>// Record — "키 목록은 정해져 있고 값 타입은 같다"
+type Filter = "all" | "active" | "completed";
+type FilterLabel = Record&lt;Filter, string&gt;;
+
+const labels: FilterLabel = {
+  all: "전체",
+  active: "진행중",
+  completed: "완료",      // 하나라도 빠지면 에러 → index signature 보다 훨씬 안전
+};
+
+// Exclude / Extract — 유니온 연산
+type T1 = string | number | boolean;
+type T2 = Exclude&lt;T1, number&gt;;        // string | boolean
+type T3 = Extract&lt;T1, number | boolean&gt;; // number | boolean
+
+// NonNullable / ReturnType / Awaited
+type A = NonNullable&lt;string | null | undefined&gt;;   // string
+function makeUser() { return { id: 1, name: "Kim" }; }
+type MadeUser = ReturnType&lt;typeof makeUser&gt;;       // { id: number; name: string }
+type Data = Awaited&lt;Promise&lt;User[]&gt;&gt;;              // User[]</code></pre>
+    </section>
+
+    <!-- ═══════════════ 13 ═══════════════ -->
+    <section class="sec" id="s13" data-no="13" data-title="단언(as)과 ! — 책임을 떠안는 문법">
+      <div class="sec-head">
+        <div class="sec-no">13</div>
+        <h2>단언(as)과 <code class="i" style="font-size:0.8em">!</code> — 책임을 떠안는 문법</h2>
+      </div>
+
+      <p>
+        <strong><code class="i">as</code>는 값을 바꾸지 않습니다.</strong> 컴파일러에게 "내가 아니까 그만 따져"라고 말하는 것뿐이고,
+        컴파일 후엔 흔적도 없이 사라집니다. 틀렸을 때 대신 책임져 줄 사람이 없다는 뜻입니다.
+      </p>
+
+<pre class="code"><code>let someValue: unknown = "This is a string";
+let someValueLength = (someValue as string).length;
+console.log(someValueLength);   // 16
+
+// 틀려도 컴파일은 통과한다
+let n: unknown = 42;
+// (n as string).toUpperCase();   // 컴파일 OK → 런타임에 크래시</code></pre>
+
+      <h3><code class="i">!</code> (non-null assertion) — "null 아님을 보증"</h3>
+<pre class="code"><code>const form = document.querySelector&lt;HTMLFormElement&gt;("#todo-form")!;
+//                                                                 ↑
+// 반환 타입 HTMLFormElement | null 에서 null 을 잘라낸다</code></pre>
+
+      <div class="call trap">
+        <div class="tag">! 의 비용</div>
+        <p>
+          HTML에서 <code class="i">id</code>를 바꾸거나 스크립트가 <code class="i">&lt;head&gt;</code>에서 먼저 실행되면 그 요소는 <code class="i">null</code>이고,
+          <code class="i">!</code>는 그걸 막지 못한 채 <em>다음 줄</em>에서 "Cannot read properties of null"로 터집니다.
+          연습용 코드에선 편의상 쓰지만, 실제 앱에서는 아래처럼 한 번 확인하는 편이 낫습니다.
+        </p>
+      </div>
+
+<pre class="code"><code>const form = document.querySelector&lt;HTMLFormElement&gt;("#todo-form");
+if (!form) throw new Error("#todo-form 을 찾을 수 없습니다");
+// 이 아래로 form 은 HTMLFormElement 로 좁혀진다 (! 없이도)</code></pre>
+
+      <h3>as 대신 <code class="i">satisfies</code> (TS 4.9+)</h3>
+      <p>
+        "이 타입을 만족하는지 검사는 하되, 추론된 좁은 타입은 유지하고 싶다"일 때 씁니다. <code class="i">as</code>와 달리 <strong>검사를 건너뛰지 않습니다.</strong>
+      </p>
+
+<pre class="code"><code>type Palette = Record&lt;string, string | [number, number, number]&gt;;
+
+const theme = {
+  primary: "#2457C5",
+  bg: [255, 255, 255],
+} satisfies Palette;
+
+theme.bg[0];              // number — 튜플로 기억됨 (as Palette 였다면 잃어버림)
+// theme.primary * 2;     // 에러 — 검사는 그대로 작동</code></pre>
+    </section>
+
+    <!-- ═══════════════ 14 ═══════════════ -->
+    <section class="sec" id="s14" data-no="14" data-title="DOM · 비동기 실전 (todo · quiz)">
+      <div class="sec-head">
+        <div class="sec-no">14</div>
+        <h2>DOM · 비동기 실전 (todo · quiz)</h2>
+      </div>
+
+      <p>
+        여기서부터는 문법이 아니라 <strong>패턴</strong>입니다. <code class="i">todo.ts</code>가 쓰고 있는 구조를 뜯어 보면 <code class="i">quiz.ts</code>에 그대로 옮길 수 있습니다.
+      </p>
+
+      <h3>querySelector 에 제네릭을 주는 이유</h3>
+<pre class="code"><code>const el1 = document.querySelector("#todo-input");
+// 타입: Element | null → el1.value 접근 불가 (Element 에는 value 가 없다)
+
+const input = document.querySelector&lt;HTMLInputElement&gt;("#todo-input")!;
+// 타입: HTMLInputElement → input.value 가능
+
+// 자주 쓰는 요소 타입
+// HTMLInputElement   .value .checked .type
+// HTMLFormElement    submit 이벤트
+// HTMLButtonElement  .disabled
+// HTMLUListElement / HTMLElement (범용)</code></pre>
+
+      <h3>상태 → 파생 → 렌더 → 이벤트 (todo.ts의 뼈대)</h3>
+<pre class="code"><code>// ① 상태: 화면이 아니라 "데이터"가 원본
+interface Todo { id: number; title: string; completed: boolean; }
+type Filter = "all" | "active" | "completed";
+
+let todos: Todo[] = [];
+let currentFilter: Filter = "all";
+
+// ② 파생: 상태로부터 계산해서 얻는 값 (따로 저장하지 않는다)
+function getFilteredTodos(): Todo[] {
+  if (currentFilter === "active")    return todos.filter((t) =&gt; !t.completed);
+  if (currentFilter === "completed") return todos.filter((t) =&gt;  t.completed);
+  return todos;
+}
+
+// ③ 렌더: 상태를 보고 화면을 처음부터 다시 그린다
+function renderTodos(): void {
+  todoList.innerHTML = "";
+  getFilteredTodos().forEach((todo) =&gt; { /* li 생성 */ });
+  const remaining = todos.filter((t) =&gt; !t.completed).length;
+  todoCount.textContent = `남은 할 일 : ${remaining}개`;
+}
+
+// ④ 이벤트: 상태만 바꾸고 → 저장 → 다시 렌더
+form.addEventListener("submit", (e) =&gt; {
+  e.preventDefault();                       // 새로고침 막기
+  const title = input.value.trim();
+  if (!title) return;
+  todos.push({ id: Date.now(), title, completed: false });
+  input.value = "";
+  saveTodos();
+  renderTodos();
+});</code></pre>
+
+      <div class="call">
+        <div class="tag">이 구조가 중요한 이유</div>
+        <p>
+          DOM을 직접 고치지 않고 <strong>"상태를 바꾸고 전부 다시 그린다"</strong>로 통일하면,
+          화면과 데이터가 어긋날 일이 없습니다. React가 하는 일이 정확히 이것이고, 여기서 그걸 손으로 해본 셈입니다.
+        </p>
+      </div>
+
+      <h3>dataset 과 <code class="i">as</code> — 여기가 타입 구멍</h3>
+<pre class="code"><code>currentFilter = button.dataset.filter as Filter;
+// dataset.filter 의 타입은 string | undefined
+// as Filter 는 검사 없이 통과시킬 뿐 — HTML 오타(data-filter="activ")를 못 잡는다</code></pre>
+
+      <div class="pair">
+        <div class="pane pane-good">
+          <div class="pane-label">✓ 런타임 검증을 붙이면</div>
+<pre class="code"><code>const FILTERS = ["all", "active", "completed"] as const;
+
+function isFilter(v: unknown): v is Filter {
+  return typeof v === "string"
+    &amp;&amp; (FILTERS as readonly string[]).includes(v);
+}
+
+const v = button.dataset.filter;
+if (isFilter(v)) {
+  currentFilter = v;   // 타입도 값도 안전
+  renderTodos();
+}</code></pre>
+        </div>
+        <div class="pane pane-bad">
+          <div class="pane-label">✗ JSON.parse 도 같은 구멍</div>
+<pre class="code"><code>const saved = localStorage.getItem("todos");
+if (saved) {
+  todos = JSON.parse(saved);
+  // JSON.parse 반환은 any
+  // → 어떤 쓰레기 데이터든 Todo[] 로 통과
+}
+
+// 최소한: unknown 으로 받고 형태를 확인하기
+const parsed: unknown = JSON.parse(saved);
+if (Array.isArray(parsed)) todos = parsed as Todo[];</code></pre>
+        </div>
+      </div>
+
+      <h3>제네릭 + async — quiz.ts 의 fetch 함수</h3>
+<pre class="code"><code>const quizData = async &lt;T&gt;(url: string): Promise&lt;T&gt; =&gt; {
+  const response = await fetch(url);
+  const data = await response.json();   // any
+  return data as T;                     // 호출한 쪽이 정한 타입으로 넘김
+};
+
+// 호출 시점에 T 를 지정 → 이후 전부 타입이 살아 있다
+const data = await quizData&lt;Question[]&gt;("./question.json");
+data[0].choices.length;   // 자동완성 됨</code></pre>
+
+      <ul class="list">
+        <li><strong>async 함수의 반환 타입은 언제나 <code class="i">Promise&lt;...&gt;</code></strong>입니다. <code class="i">Promise&lt;T&gt;</code>를 빠뜨리면 <code class="i">Promise&lt;any&gt;</code>가 됩니다.</li>
+        <li><code class="i">await</code>는 <code class="i">async</code> 함수 안에서만 씁니다. 그래서 <code class="i">main()</code>으로 감싸 마지막에 호출한 것입니다.</li>
+        <li><code class="i">as T</code>는 <strong>런타임 보장이 아닙니다.</strong> 서버가 다른 모양을 보내도 컴파일러는 모릅니다 — 실무에선 zod 같은 스키마 검증을 함께 씁니다.</li>
+      </ul>
+
+      <h3>quiz.ts 에 그대로 대응시키기</h3>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>todo.ts</th><th>quiz.ts</th><th>역할</th></tr></thead>
+          <tbody>
+            <tr><td><code>todos</code>, <code>currentFilter</code></td><td><code>questions</code>, <code>currentQuestionIndex</code>, <code>score</code></td><td>상태 (원본 데이터)</td></tr>
+            <tr><td><code>getFilteredTodos()</code></td><td><code>questions[currentQuestionIndex]</code></td><td>파생 — 지금 보여줄 것</td></tr>
+            <tr><td><code>renderTodos()</code></td><td><code>renderQuestion(index)</code></td><td>상태 → 화면</td></tr>
+            <tr><td>submit / click 핸들러</td><td><code>handleChoiceClick</code>, <code>handleNextClick</code></td><td>상태 변경 후 다시 렌더</td></tr>
+            <tr><td><code>saveTodos()</code></td><td>(없음 — 새로고침하면 초기화)</td><td>영속화</td></tr>
+            <tr><td><code>li.className = ... ? "completed" : ""</code></td><td><code>btn.classList.add("correct" / "wrong")</code></td><td>상태를 CSS 클래스로 표현</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="call tip">
+        <div class="tag">막혔을 때 순서</div>
+        <p>
+          <code class="i">renderQuestion</code> → <code class="i">handleChoiceClick</code> → <code class="i">handleNextClick</code> → <code class="i">showResult</code> → <code class="i">restartQuiz</code> 순으로 채우세요.
+          앞의 둘만 되면 나머지는 <strong>상태를 초기화하고 다시 렌더하는</strong> 같은 패턴의 반복입니다.
+        </p>
+      </div>
+    </section>
+
+    <!-- ═══════════════ 15 ═══════════════ -->
+    <section class="sec" id="s15" data-no="15" data-title="한 장 치트시트">
+      <div class="sec-head">
+        <div class="sec-no">15</div>
+        <h2>한 장 치트시트</h2>
+      </div>
+
+<pre class="code"><code>// ── 기본 ──────────────────────────────────────────────
+let s: string; let n: number; let b: boolean;
+let arr: string[];            let mixed: (string | number)[];
+let ro: readonly string[];    let tup: [string, number];
+const frozen = [1, 2] as const;            // readonly [1, 2]
+
+// ── 특수 ──────────────────────────────────────────────
+any      // 검사 포기 (쓰지 말 것)
+unknown  // 모름 → 좁힌 뒤 사용
+void     // 반환값 없음
+never    // 값이 없음 / 도달 불가 검사
+
+// ── 타입 만들기 ───────────────────────────────────────
+type Status = "idle" | "done";             // 유니온
+type AB = A &amp; B;                           // 교차 (둘 다)
+type Dict = { [key: string]: string };     // index signature
+interface U { name: string; age?: number; readonly id: number }
+interface E extends U { dept: string }
+class C implements U { /* ... */ }
+
+// ── 함수 ──────────────────────────────────────────────
+(a: number, b?: string, ...rest: number[]): void =&gt; {}
+type Fn = (a: number) =&gt; string;
+
+// ── 제네릭 ────────────────────────────────────────────
+&lt;T&gt;(arr: T[]): T =&gt; arr[0]
+&lt;T extends { length: number }&gt;(x: T)
+&lt;T, K extends keyof T&gt;(obj: T, key: K): T[K]
+
+// ── 유틸리티 ──────────────────────────────────────────
+keyof T             // 키들의 유니온
+typeof value        // 값 → 타입
+Partial&lt;T&gt;  Required&lt;T&gt;  Readonly&lt;T&gt;
+Pick&lt;T, K&gt;  Omit&lt;T, K&gt;   Record&lt;K, V&gt;
+Exclude&lt;T, U&gt;  Extract&lt;T, U&gt;  NonNullable&lt;T&gt;
+ReturnType&lt;F&gt;  Awaited&lt;P&gt;
+
+// ── 좁히기 ────────────────────────────────────────────
+typeof x === "string"      x === null      "key" in obj
+x instanceof HTMLElement   obj.type === "car"
+function isCar(x: A | B): x is A { ... }
+
+// ── 단언 ──────────────────────────────────────────────
+value as string            // 검사 건너뛰기 (책임은 나)
+el!                        // null 아님 보증
+obj satisfies T            // 검사는 하되 좁은 타입 유지
+
+// ── DOM ───────────────────────────────────────────────
+document.querySelector&lt;HTMLInputElement&gt;("#id")   // → T | null
+document.querySelectorAll&lt;HTMLButtonElement&gt;(".c")
+el.dataset.filter          // string | undefined</code></pre>
+    </section>
+
+    <!-- ═══════════════ 16 ═══════════════ -->
+    <section class="sec" id="s16" data-no="16" data-title="셀프 체크 — 답을 가리고 먼저 대답해 보기">
+      <div class="sec-head">
+        <div class="sec-no">16</div>
+        <h2>셀프 체크</h2>
+      </div>
+      <p>먼저 스스로 답해 보고 펼치세요. 막히는 항목의 번호가 다시 봐야 할 장입니다.</p>
+
+      <div class="quiz">
+        <details class="q">
+          <summary><span><code class="i">any</code>와 <code class="i">unknown</code>의 차이를 한 문장으로?</span></summary>
+          <div class="a">
+            <p>둘 다 아무 값이나 받지만, <strong>any는 받은 뒤에도 아무 검사를 안 하고, unknown은 좁히기 전엔 아무것도 못 하게 막습니다.</strong> 외부에서 온 값은 unknown으로 받으세요. → 04장</p>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary><span><code class="i">const x = "bob"</code>과 <code class="i">let y = "bob"</code>의 추론 타입은 각각?</span></summary>
+          <div class="a">
+            <p><code class="i">x</code>는 리터럴 타입 <code class="i">"bob"</code>, <code class="i">y</code>는 <code class="i">string</code>. const는 값이 변할 수 없으니 값 자체가 타입이 됩니다. → 01장</p>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary><span><code class="i">(string|number)[]</code>와 <code class="i">string[]|number[]</code>는 뭐가 다른가?</span></summary>
+          <div class="a">
+            <p>앞은 <strong>요소마다</strong> string 또는 number(섞을 수 있음), 뒤는 <strong>배열 전체가</strong> string[] 이거나 number[](섞을 수 없고 push도 막힘). → 01장</p>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary><span>튜플을 쓰면 유니온 배열보다 뭐가 좋은가?</span></summary>
+          <div class="a">
+            <p><strong>위치별 타입이 보존됩니다.</strong> 구조분해했을 때 각 변수가 정확한 타입을 갖습니다. 유니온 배열은 전부 합집합이 되어 메서드 호출이 막힙니다. → 03장</p>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary><span><code class="i">const unreachable: never = x;</code>는 왜 쓰는가?</span></summary>
+          <div class="a">
+            <p>유니온의 모든 케이스를 처리했는지 컴파일러가 검사하게 하려고요. 나중에 유니온에 타입이 추가되면 <strong>이 줄에서 에러가 나며 처리 누락을 알려줍니다.</strong> → 04장</p>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary><span>type과 interface 중 하나만 할 수 있는 일은?</span></summary>
+          <div class="a">
+            <p>유니온·튜플·원시 별칭은 <strong>type만</strong>. 같은 이름으로 다시 선언해 합치는 선언 병합은 <strong>interface만</strong>. → 08장</p>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary><span><code class="i">interface X { name: string; id: number; [key: string]: string }</code>가 에러인 이유는?</span></summary>
+          <div class="a">
+            <p>string 인덱스 시그니처를 선언하면 <strong>모든 문자열 키의 값이 그 타입이어야</strong> 하는데 <code class="i">id: number</code>가 위반합니다. 원본 코드가 <code class="i">[key: number]</code>를 쓴 이유가 이것입니다. → 07장</p>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary><span>제네릭이 <code class="i">any[]</code>보다 나은 점은?</span></summary>
+          <div class="a">
+            <p><strong>입력과 출력의 타입 관계를 유지합니다.</strong> any는 정보를 버리지만 <code class="i">&lt;T&gt;(arr: T[]): T</code>는 "number를 넣으면 number가 나온다"를 기억합니다. → 11장</p>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary><span><code class="i">Pick</code>과 <code class="i">Omit</code>을 고르는 기준은?</span></summary>
+          <div class="a">
+            <p>남길 게 적으면 Pick, 뺄 게 적으면 Omit. 원본에 속성이 추가될 때 Omit은 자동으로 따라오고 Pick은 그대로입니다. → 12장</p>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary><span><code class="i">document.querySelector("#input")!.value</code>가 에러인 이유는?</span></summary>
+          <div class="a">
+            <p><code class="i">!</code>는 null만 제거할 뿐 타입은 여전히 <code class="i">Element</code>인데, <code class="i">Element</code>에는 <code class="i">value</code>가 없습니다.
+            <code class="i">querySelector&lt;HTMLInputElement&gt;("#input")</code>처럼 요소 타입을 지정해야 합니다. → 14장</p>
+          </div>
+        </details>
+
+        <details class="q">
+          <summary><span><code class="i">data as T</code>로 fetch 결과 타입을 지정하면 안전한가?</span></summary>
+          <div class="a">
+            <p>아니요. <code class="i">as</code>는 <strong>컴파일 시점의 약속일 뿐</strong> 런타임에 아무 검사도 하지 않습니다. 서버가 다른 모양을 보내도 통과합니다. → 13·14장</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="footnote">
+    원본 소스는 수정하지 않았습니다 · src/ts1.ts · src/ts2.ts · src/function.ts · src/exam/todo.ts · src/exam/quiz.ts
+  </div>
+</div>
+
+<script>
+(function () {
+  // ── 목차 생성 ─────────────────────────────────────────
+  var secs = Array.prototype.slice.call(document.querySelectorAll('.sec'));
+  var lists = [document.getElementById('toc-list'), document.getElementById('toc-list-m')];
+
+  lists.forEach(function (list) {
+    if (!list) return;
+    secs.forEach(function (sec) {
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.href = '#' + sec.id;
+      var no = document.createElement('span');
+      no.className = 'no';
+      no.textContent = sec.dataset.no;
+      var tx = document.createElement('span');
+      tx.textContent = sec.dataset.title;
+      a.appendChild(no);
+      a.appendChild(tx);
+      li.appendChild(a);
+      list.appendChild(li);
+    });
+  });
+
+  // ── 스크롤 스파이 ─────────────────────────────────────
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+  function setActive(id) {
+    links.forEach(function (a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+  }
+  if ('IntersectionObserver' in window) {
+    var visible = {};
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { visible[e.target.id] = e.isIntersecting; });
+      for (var i = 0; i < secs.length; i++) {
+        if (visible[secs[i].id]) { setActive(secs[i].id); break; }
+      }
+    }, { rootMargin: '-10% 0px -70% 0px' });
+    secs.forEach(function (s) { io.observe(s); });
+  }
+
+  // ── 읽기 진행 바 ──────────────────────────────────────
+  var bar = document.getElementById('progress');
+  function onScroll() {
+    var h = document.documentElement;
+    var max = h.scrollHeight - h.clientHeight;
+    bar.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + '%';
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // ── 코드 하이라이팅 ───────────────────────────────────
+  var KW = ['const','let','var','function','return','if','else','for','while','do','switch','case',
+            'break','continue','type','interface','enum','class','implements','extends','new','as',
+            'readonly','keyof','in','of','import','export','from','async','await','this','satisfies',
+            'declare','infer','instanceof','throw','try','catch','finally','typeof','public','private',
+            'protected','constructor','static','true','false','null','undefined'];
+  var PRIM = ['string','number','boolean','object','symbol','bigint','any','unknown','never','void'];
+  var kw = {}, prim = {};
+  KW.forEach(function (w) { kw[w] = 1; });
+  PRIM.forEach(function (w) { prim[w] = 1; });
+
+  var re = /(\/\/[^\n]*)|(\/\*[\s\S]*?\*\/)|("(?:\\.|[^"\\])*")|('(?:\\.|[^'\\])*')|(`(?:\\.|[^`\\])*`)|(\b\d[\d_.]*\b)|([A-Za-z_$][\w$]*)/g;
+
+  function highlight(el) {
+    var src = el.textContent;
+    var frag = document.createDocumentFragment();
+    var last = 0, m;
+    re.lastIndex = 0;
+    while ((m = re.exec(src)) !== null) {
+      if (m.index > last) frag.appendChild(document.createTextNode(src.slice(last, m.index)));
+      var t = m[0], cls = null;
+      if (m[1] || m[2]) cls = 'tk-c';
+      else if (m[3] || m[4] || m[5]) cls = 'tk-s';
+      else if (m[6]) cls = 'tk-n';
+      else if (kw[t]) cls = 'tk-k';
+      else if (prim[t] || /^[A-Z]/.test(t)) cls = 'tk-t';
+      if (cls) {
+        var sp = document.createElement('span');
+        sp.className = cls;
+        sp.textContent = t;
+        frag.appendChild(sp);
+      } else {
+        frag.appendChild(document.createTextNode(t));
+      }
+      last = m.index + t.length;
+    }
+    if (last < src.length) frag.appendChild(document.createTextNode(src.slice(last)));
+    el.textContent = '';
+    el.appendChild(frag);
+  }
+
+  document.querySelectorAll('pre.code > code').forEach(highlight);
+})();
+</script>
