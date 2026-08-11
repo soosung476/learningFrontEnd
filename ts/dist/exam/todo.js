@@ -124,6 +124,7 @@ filterButtons.forEach((button) => {
     button.addEventListener("click", () => {
         // 클릭한 버튼의 data-filter 속성값(all/active/completed)을 읽어와
         // currentFilter에 저장한다. (todo.html에 data-filter="all" 등으로 정의돼 있음)
+        // attributes 중 data-* 인 것들은 dataset.* 로 가져올 수 있음.
         currentFilter = button.dataset.filter;
         // 필터가 바뀌었으니 그 기준으로 화면을 다시 그린다.
         renderTodos();
