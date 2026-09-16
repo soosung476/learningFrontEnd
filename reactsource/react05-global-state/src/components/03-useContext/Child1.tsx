@@ -1,11 +1,7 @@
-import { useContext } from "react";
-import { CountContext } from "./CommonContext";
+import { useCount } from "./CommonContext";
 
 const Child2 = () => {
-  const context = useContext(CountContext);
-  if (!context) {
-    throw new Error("Context가 없습니다");
-  }
+  const context = useCount();
   const { count, increaseCount, decreaseCount } = context;
   return (
     <div>

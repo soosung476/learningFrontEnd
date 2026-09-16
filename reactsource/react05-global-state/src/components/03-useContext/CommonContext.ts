@@ -1,6 +1,6 @@
 // 1. Context로 사용할 객체 생성
 
-import { createContext } from "react";
+import { createContext, useContext } from "react";
 
 type ThemeContextType = {
   isDark: boolean;
@@ -11,6 +11,15 @@ type CountContextType = {
   increaseCount: () => void;
   decreaseCount: () => void;
 };
+
+// Context 널 체크를 custom hook 으로 생성
+export function useCount() {
+  const context = useContext(CountContext);
+  if (!context) {
+    throw new Error("Context is null");
+  }
+  return context;
+}
 
 type OnContextType = {
   isOn: boolean;
