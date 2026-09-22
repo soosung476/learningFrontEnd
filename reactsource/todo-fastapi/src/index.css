@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+/* Warm neutral surfaces, terracotta actions, and cool teal completion states. */
+@theme {
+  --color-canvas: #f4efe9;
+  --color-surface: #fffdf9;
+  --color-subtle: #f8f3ed;
+  --color-line: #e6dbcf;
+  --color-ink: #352f2a;
+  --color-muted: #75685e;
+  --color-primary: #a64b32;
+  --color-primary-hover: #873a26;
+  --color-primary-soft: #f8e9df;
+  --color-success: #27665f;
+  --color-success-soft: #eaf3ef;
+  --color-success-line: #c5dcd3;
+  --color-danger: #a33f49;
+  --color-danger-hover: #822d36;
+  --color-danger-soft: #fbecef;
+}
