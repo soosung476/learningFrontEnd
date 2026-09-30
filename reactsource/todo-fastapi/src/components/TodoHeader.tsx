@@ -1,7 +1,9 @@
 function TodoHeader({
   getTodosByCompleted,
+  completed,
 }: {
   getTodosByCompleted: (completed: string) => void;
+  completed: boolean | null;
 }) {
   console.log("TodoHeader rendered");
   return (
@@ -12,6 +14,7 @@ function TodoHeader({
         <select
           id="completed"
           name="completed"
+          value={completed === null ? "" : String(completed)}
           className="rounded-full border border-line bg-subtle px-3 py-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           onChange={(e) => getTodosByCompleted(e.target.value)}
         >
