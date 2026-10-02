@@ -1,15 +1,17 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { postBoard } from "../apis/boardApi";
 import BoardForm from "../components/BoardForm";
-import { type BoardUpsert } from "../types/board";
+import { type BoardCreate, type BoardUpdate } from "../types/board";
 
 const BoardWrite = () => {
   const navigate = useNavigate();
-  const onSubmit = async (board: BoardUpsert) => {
+  const [searchParams] = useSearchParams();
+  const size = Number(searchParams.get("size")) || 10;
+  const onSubmit = async (board: BoardCreate) => {
     try {
       const result = await postBoard(board);
       console.log(result);
-      navigate("/boards");
+      navigate(`/boards?page=1&size=${size}`);
     } catch (error) {
       console.log(error);
     }

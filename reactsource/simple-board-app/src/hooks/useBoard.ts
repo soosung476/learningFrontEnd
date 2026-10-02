@@ -1,31 +1,38 @@
 import { useEffect, useState } from "react";
-import { getBoard, getComments } from "../apis/boardApi";
-import type { Board, Comment } from "../types/board";
+import { getBoard } from "../apis/boardApi";
+import type { BoardResponse, Comment } from "../types/board";
+
+export const initialBoard: BoardResponse = {
+  id: 0,
+  title: "",
+  contents: "",
+  user_id: 0,
+  created_at: "",
+  user: { user_id: 0, name: "" },
+  comments: [],
+};
 
 const useBoard = (id: string | undefined) => {
-  const [board, setBoard] = useState<Board | null>(null);
+  const [board, setBoard] = useState<BoardResponse>(initialBoard);
   const [loading, setLoading] = useState(true);
-  const [comments, setComments] = useState<Comment[]>([]);
 
+  const fetchData = async () => {
+    if (!id) return;
+
+    try {
+      const serverData = await getBoard(id);
+      setBoard(serverData);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchData = async () => {
-      if (!id) return;
-
-      try {
-        const serverData = await getBoard(id);
-        const serverCommentData = await getComments(id);
-        setBoard(serverData);
-        setComments(serverCommentData);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchData();
   }, [id]);
 
-  return { board, comments, loading };
+  return { board, loading, refresh: fetchData };
 };
 
 export default useBoard;

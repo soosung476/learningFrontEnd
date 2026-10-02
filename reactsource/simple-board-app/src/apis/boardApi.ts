@@ -1,9 +1,14 @@
 import axios from "axios";
-import type { BoardUpsert } from "../types/board";
+import type { BoardCreate, BoardUpdate } from "../types/board";
 
-const url = `https://jsonplaceholder.typicode.com/posts`;
-export const getBoards = async (limit: number = 10) => {
-  const response = await axios.get(`${url}?_limit=${limit}`);
+const url = `http://127.0.0.1:8000/boards`;
+export const getBoards = async (page: number, size: number) => {
+  const response = await axios.get(`${url}`, { params: { page, size } });
+  return response.data;
+};
+
+export const getRecents = async () => {
+  const response = await axios.get(`${url}/recents`);
   return response.data;
 };
 
@@ -12,12 +17,12 @@ export const getBoard = async (id: string) => {
   return response.data;
 };
 
-export const postBoard = async (board: BoardUpsert) => {
+export const postBoard = async (board: BoardCreate) => {
   const response = await axios.post(`${url}`, board);
   return response.data;
 };
 
-export const putBoard = async (id: string, board: BoardUpsert) => {
+export const putBoard = async (id: string, board: BoardUpdate) => {
   const response = await axios.put(`${url}/${id}`, board);
   return response.data;
 };
