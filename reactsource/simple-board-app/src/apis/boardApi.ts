@@ -1,9 +1,17 @@
 import axios from "axios";
 import type { BoardCreate, BoardUpdate } from "../types/board";
+import axiosInstance from "./axios";
 
 const url = `http://127.0.0.1:8000/boards`;
-export const getBoards = async (page: number, size: number) => {
-  const response = await axios.get(`${url}`, { params: { page, size } });
+export const getBoards = async (
+  page: number,
+  size: number,
+  criteria: string,
+  keyword: string,
+) => {
+  const response = await axios.get(`${url}`, {
+    params: { page, size, criteria, keyword },
+  });
   return response.data;
 };
 
@@ -13,26 +21,26 @@ export const getRecents = async () => {
 };
 
 export const getBoard = async (id: string) => {
-  const response = await axios.get(`${url}/${id}`);
+  const response = await axiosInstance.get(`${url}/${id}`);
   return response.data;
 };
 
 export const postBoard = async (board: BoardCreate) => {
-  const response = await axios.post(`${url}`, board);
+  const response = await axiosInstance.post(`${url}`, board);
   return response.data;
 };
 
 export const putBoard = async (id: string, board: BoardUpdate) => {
-  const response = await axios.put(`${url}/${id}`, board);
+  const response = await axiosInstance.put(`${url}/${id}`, board);
   return response.data;
 };
 
 export const deleteBoard = async (id: string) => {
-  const response = await axios.delete(`${url}/${id}`);
+  const response = await axiosInstance.delete(`${url}/${id}`);
   return response.data;
 };
 
 export const getComments = async (id: string) => {
-  const response = await axios.get(`${url}/${id}/comments`);
+  const response = await axiosInstance.get(`${url}/${id}/comments`);
   return response.data;
 };

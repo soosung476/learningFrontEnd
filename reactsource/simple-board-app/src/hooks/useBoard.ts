@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getBoard } from "../apis/boardApi";
-import type { BoardResponse, Comment } from "../types/board";
+import type { BoardResponse } from "../types/board";
 
 export const initialBoard: BoardResponse = {
   id: 0,

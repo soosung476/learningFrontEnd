@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import type { BoardResponse } from "../types/board";
 import { getRecents } from "../apis/boardApi";
+import { useAuth } from "./AuthContext";
 
 const Home = () => {
   const [data, setData] = useState<BoardResponse[]>([]);
   const [loading, setLoading] = useState(false);
+  const { isLoggedIn } = useAuth();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -59,8 +61,14 @@ const Home = () => {
             </Link>
 
             <Link
+              onClick={(e) => {
+                if (!isLoggedIn) {
+                  e.preventDefault();
+                  alert("로그인이 필요한 서비스입니다.");
+                }
+              }}
               to="/boards/write"
-              className="rounded-lg border border-white/15 bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+              className={`shrink-0 rounded-lg bg-white/15 px-5 py-2.5 text-center text-sm font-semibold text-white ${isLoggedIn ? " hover:bg-white/10" : "cursor-not-allowed opacity-50"}`}
             >
               글 작성하기
             </Link>
@@ -92,6 +100,12 @@ const Home = () => {
         </Link>
 
         <Link
+          onClick={(e) => {
+            if (!isLoggedIn) {
+              e.preventDefault();
+              alert("로그인이 필요한 서비스입니다.");
+            }
+          }}
           to="/boards/write"
           className="group rounded-xl border border-slate-200 bg-white p-6 transition hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-sm"
         >
@@ -197,8 +211,14 @@ const Home = () => {
           </div>
 
           <Link
+            onClick={(e) => {
+              if (!isLoggedIn) {
+                e.preventDefault();
+                alert("로그인이 필요한 서비스입니다.");
+              }
+            }}
             to="/boards/write"
-            className="shrink-0 rounded-lg bg-indigo-600 px-5 py-2.5 text-center text-sm font-semibold text-white hover:bg-indigo-700"
+            className={`shrink-0 rounded-lg bg-indigo-600 px-5 py-2.5 text-center text-sm font-semibold text-white ${isLoggedIn ? " hover:bg-indigo-700" : "cursor-not-allowed opacity-50"}`}
           >
             게시글 작성
           </Link>
