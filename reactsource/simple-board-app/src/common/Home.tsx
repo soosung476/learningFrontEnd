@@ -184,9 +184,9 @@ const Home = () => {
                   </h3>
 
                   <div className="mt-2 flex gap-3 text-xs text-slate-400">
-                    <span>{post.user_id}</span>
+                    <span>{post.user.name}</span>
                     <span>{post.created_at}</span>
-                    <span>조회 </span>
+                    <span>조회 {post.views} </span>
                   </div>
                 </div>
 

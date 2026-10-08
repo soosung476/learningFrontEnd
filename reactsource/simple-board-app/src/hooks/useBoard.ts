@@ -8,6 +8,7 @@ export const initialBoard: BoardResponse = {
   contents: "",
   user_id: 0,
   created_at: "",
+  views: 0,
   user: { user_id: 0, name: "" },
   comments: [],
 };

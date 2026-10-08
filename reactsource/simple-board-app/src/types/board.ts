@@ -1,5 +1,7 @@
 // 서버로부터 내려올 데이터 타입
 
+
+
 export type UserResponse = {
   user_id: number;
   name: string;
@@ -40,6 +42,7 @@ export type BoardResponse = {
   contents: string;
   user_id: number;
   created_at: string;
+  views: number;
   user: UserResponse;
   comments: CommentResponse[];
 };

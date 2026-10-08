@@ -101,13 +101,15 @@ const BoardDetail = () => {
               {board.user.name}
             </span>
             <span>{board.created_at}</span>
-            <span>조회 42</span>
+            <span>{board.views}</span>
           </div>
         </div>
 
         {/* Content */}
         <div className="min-h-100 px-8 py-10 leading-8 text-slate-700">
-          <p>{board.contents}</p>
+          <p className="whitespace-pre-wrap wrap-break-words">
+            {board.contents}
+          </p>
         </div>
 
         {/* Buttons */}

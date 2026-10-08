@@ -169,7 +169,9 @@ const BoardList = () => {
                   {post.created_at}
                 </td>
 
-                <td className="px-6 py-5 text-center text-slate-400">28</td>
+                <td className="px-6 py-5 text-center text-slate-400">
+                  {post.views}
+                </td>
               </tr>
             ))}
           </tbody>

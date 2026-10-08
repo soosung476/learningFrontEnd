@@ -1,10 +1,15 @@
 import axios from "axios";
-import type { UserLogin } from "../types/user";
+import type { UserCreate, UserLogin } from "../types/user";
 import axiosInstance from "./axios";
 
 const SERVER_URL = "http://localhost:8000/auth";
 
 // 로그인
+
+export const signup = async (data: UserCreate) => {
+  const response = await axios.post(`${SERVER_URL}`, data);
+  return response.data;
+};
 
 export const signin = async (data: UserLogin) => {
   const response = await axios.post(`${SERVER_URL}/login`, data);

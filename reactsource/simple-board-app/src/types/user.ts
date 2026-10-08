@@ -7,3 +7,16 @@ export type User = {
   email: string;
   name: string;
 };
+
+export type UserSignup = {
+  email: string;
+  password: string;
+  name: string;
+  passwordCheck: string;
+};
+
+export type UserCreate = {
+  email: string;
+  password: string;
+  name: string;
+};
